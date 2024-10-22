@@ -6,7 +6,7 @@ interface Book {
     id: number;
     title: string;
     author: string;
-}
+};
 
 const books: Book[] = [
     { id: 1, title: "1984", author: "George Orwell" },
@@ -63,9 +63,9 @@ router.delete("/books/:id", (req: Request, res: Response) => {
 
     if (bookIndex !== -1) {
         books.splice(bookIndex, 1);
-        res.status(204).send();
+        res.status(204).send().json({ message: `${bookId} has been deleted`});
     } else {
-        res.status(404).json({ message: "Book note found"})
+        res.status(404).json({ message: "Book not found"})
     }
 });
 

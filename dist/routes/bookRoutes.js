@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
+;
 const books = [
     { id: 1, title: "1984", author: "George Orwell" },
     { id: 2, title: "Brave New World", author: "Aldous Huxley" }
@@ -55,7 +56,7 @@ router.delete("/books/:id", (req, res) => {
         res.status(204).send();
     }
     else {
-        res.status(404).json({ message: "Book note found" });
+        res.status(404).json({ message: "Book not found" });
     }
 });
 exports.default = router;
