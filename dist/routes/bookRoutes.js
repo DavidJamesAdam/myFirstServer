@@ -29,8 +29,19 @@ router.post("/books", (req, res) => {
         title: req.body.title,
         author: req.body.author
     };
-    books.push(newBook);
-    res.status(201).json(newBook);
+    if (newBook.title == "" && newBook.author == "") {
+        res.status(400).json({ message: "title and author required" });
+    }
+    else if (newBook.title == "") {
+        res.status(400).json({ message: "title required" });
+    }
+    else if (newBook.author == "") {
+        res.status(400).json({ message: "author required" });
+    }
+    else {
+        books.push(newBook);
+        res.status(201).json(newBook);
+    }
 });
 // Update a book by ID
 router.put("/books/:id", (req, res) => {
@@ -53,7 +64,7 @@ router.delete("/books/:id", (req, res) => {
     const bookIndex = books.findIndex(b => b.id === bookId);
     if (bookIndex !== -1) {
         books.splice(bookIndex, 1);
-        res.status(204).send();
+        res.status(204).send().json({ message: `${bookId} has been deleted` });
     }
     else {
         res.status(404).json({ message: "Book not found" });

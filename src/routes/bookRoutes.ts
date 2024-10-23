@@ -36,9 +36,18 @@ router.post("/books", (req: Request, res: Response) => {
         title: req.body.title,
         author: req.body.author
     };
-    books.push(newBook);
-    res.status(201).json(newBook);
-})
+
+    if (newBook.title == "" && newBook.author == "") {
+        res.status(400).json({ message: "title and author required"})
+    } else if (newBook.title == "") {
+        res.status(400).json({ message: "title required"})
+    } else if (newBook.author == "") {
+        res.status(400).json({ message: "author required"})
+    } else {
+        books.push(newBook);
+        res.status(201).json(newBook);
+    }
+});
 
 // Update a book by ID
 router.put("/books/:id", (req: Request, res: Response) => {
