@@ -10,6 +10,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use("/api", bookRoutes_1.default);
 app.listen(PORT, () => {
-    // Log a message whne the server is successfully running
+    // Log a message when the server is successfully running
     console.log(`Server is running on http://localhost:${PORT}`);
 });
