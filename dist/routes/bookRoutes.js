@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
@@ -8,11 +17,16 @@ const books = [
     { id: 2, title: "Brave New World", author: "Aldous Huxley" }
 ];
 // Get all books
-router.get("/books", (req, res) => {
-    res.json(books);
-});
+router.get("/books", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.json(books);
+    }
+    catch (_a) {
+        next();
+    }
+}));
 // Get a book by ID
-router.get("/books/:id", (req, res) => {
+router.get("/books/:id", (req, res, next) => {
     const bookId = parseInt(req.params.id);
     const book = books.find(b => b.id === bookId);
     if (book) {
@@ -23,7 +37,7 @@ router.get("/books/:id", (req, res) => {
     }
 });
 // Create a new book
-router.post("/books", (req, res) => {
+router.post("/books", (req, res, next) => {
     const newBook = {
         id: books.length + 1,
         title: req.body.title,
@@ -44,7 +58,7 @@ router.post("/books", (req, res) => {
     }
 });
 // Update a book by ID
-router.put("/books/:id", (req, res) => {
+router.put("/books/:id", (req, res, next) => {
     const bookId = parseInt(req.params.id);
     const bookIndex = books.findIndex(b => b.id === bookId);
     if (bookIndex !== -1) {
@@ -59,7 +73,7 @@ router.put("/books/:id", (req, res) => {
     }
 });
 // Delete a book by id
-router.delete("/books/:id", (req, res) => {
+router.delete("/books/:id", (req, res, next) => {
     const bookId = parseInt(req.params.id);
     const bookIndex = books.findIndex(b => b.id === bookId);
     if (bookIndex !== -1) {

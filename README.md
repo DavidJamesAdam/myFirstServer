@@ -15,4 +15,9 @@ https://expressjs.com/en/guide/error-handling.html
 What is Express?
 - Exporess JS is a web application framework. It's a layer built on top of Node that helps manage servers and routes.
 
+How To Use TypeScript With Express & Node (also goes into scripting in package.json)
+https://www.youtube.com/watch?v=qy8PxD3alWw
 
+Callbacks, Promises, Async/Await
+- https://www.youtube.com/watch?v=670f71LTWpM
+- https://www.youtube.com/watch?v=vn3tm0quoqE
