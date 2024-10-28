@@ -1,5 +1,7 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import bookRoutes from "./routes/bookRoutes";
+
+import { errorHandler } from "./utils/errorHandler";
 
 const server = express();
 const PORT: number = 3000;
@@ -11,11 +13,14 @@ server.get("/", (req, res) => {
     res.send("Server is running.");
 })
 
+// Catch all error handler for all routes not defined
+// This can be a message, webpage, json, etc
+server.all('*', (req, res) => {
+    res.status(500).json({ message: 'An error has occcured'})
+});
 
 // The error handler
-server.use((err: express.ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
-    res.status(500).send('Something broke!');
-})
+server.use(errorHandler);
 
 server.listen(PORT, () => {
     // Log a message when the server is successfully running

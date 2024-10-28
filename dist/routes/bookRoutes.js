@@ -26,7 +26,7 @@ router.get("/books", (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 }));
 // Get a book by ID
-router.get("/books/:id", (req, res, next) => {
+router.get("/books/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const bookId = parseInt(req.params.id);
     const book = books.find(b => b.id === bookId);
     if (book) {
@@ -35,7 +35,7 @@ router.get("/books/:id", (req, res, next) => {
     else {
         res.status(404).json({ message: "Book not found" });
     }
-});
+}));
 // Create a new book
 router.post("/books", (req, res, next) => {
     const newBook = {

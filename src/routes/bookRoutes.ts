@@ -23,7 +23,7 @@ router.get("/books", async (req: Request, res: Response, next: NextFunction) => 
 });
 
 // Get a book by ID
-router.get("/books/:id", (req: Request, res: Response, next: NextFunction) => {
+router.get("/books/:id", async (req: Request, res: Response, next: NextFunction) => {
     const bookId = parseInt(req.params.id);
     const book = books.find(b=> b.id === bookId);
     if (book) {
