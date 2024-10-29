@@ -1,4 +1,5 @@
 import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
+import { customError } from "../utils/customError";
 
 export const errorHandler: ErrorRequestHandler = (
     error: Error,
@@ -6,5 +7,8 @@ export const errorHandler: ErrorRequestHandler = (
     res: Response,
     next: NextFunction
 ) => {
-    res.status(404).json({ message: error.message });
+    if (error instanceof customError) {
+        res.status(error.statusCode).json(error.serialize());
+    };
+    res.status(500).json({ message: "An error occured"});
 };

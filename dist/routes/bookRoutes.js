@@ -13,6 +13,8 @@ const express_1 = require("express");
 const routeHandlers_1 = require("../handlers/routeHandlers");
 const getBooksError_1 = require("../errors/getBooksError");
 const postBooksError_1 = require("../errors/postBooksError");
+const putBooksError_1 = require("../errors/putBooksError");
+const deleteBooksError_1 = require("../errors/deleteBooksError");
 const router = (0, express_1.Router)();
 ;
 const books = [
@@ -72,29 +74,39 @@ router.post("/books", (req, res, next) => __awaiter(void 0, void 0, void 0, func
 }));
 // Update a book by ID
 router.put("/books/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const bookId = parseInt(req.params.id);
-    const bookIndex = books.findIndex(b => b.id === bookId);
-    if (bookIndex !== -1) {
-        books[bookIndex] = {
-            id: bookId,
-            title: req.body.title,
-            author: req.body.author
-        };
+    try {
+        const bookId = parseInt(req.params.id);
+        const bookIndex = books.findIndex(b => b.id === bookId);
+        if (bookIndex !== -1) {
+            books[bookIndex] = {
+                id: bookId,
+                title: req.body.title,
+                author: req.body.author
+            };
+        }
+        else {
+            res.status(404).json({ message: "Book not found" });
+        }
     }
-    else {
-        res.status(404).json({ message: "Book not found" });
+    catch (err) {
+        next(new putBooksError_1.putBooksError());
     }
 }));
 // Delete a book by id
 router.delete("/books/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const bookId = parseInt(req.params.id);
-    const bookIndex = books.findIndex(b => b.id === bookId);
-    if (bookIndex !== -1) {
-        books.splice(bookIndex, 1);
-        res.status(204).send().json({ message: `${bookId} has been deleted` });
+    try {
+        const bookId = parseInt(req.params.id);
+        const bookIndex = books.findIndex(b => b.id === bookId);
+        if (bookIndex !== -1) {
+            books.splice(bookIndex, 1);
+            res.status(204).send().json({ message: `${bookId} has been deleted` });
+        }
+        else {
+            res.status(404).json({ message: "Book not found" });
+        }
     }
-    else {
-        res.status(404).json({ message: "Book not found" });
+    catch (err) {
+        next(new deleteBooksError_1.deleteBooksError);
     }
 }));
 exports.default = router;

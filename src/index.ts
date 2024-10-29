@@ -2,6 +2,7 @@ import express from "express";
 import routes from "./routes/bookRoutes";
 
 import { errorHandler } from "./handlers/errorHandler";
+import { customError } from "./utils/customError";
 
 const server = express();
 const PORT: number = 3000;
@@ -18,8 +19,8 @@ server.get("/", (req, res) => {
 
 // Catch all error handler for all routes not defined
 // This can be a message, webpage, json, etc
-server.all('*', (req, res) => {
-    res.status(500).json({ message: 'An error has occcured'})
+server.all('*', () => {
+    throw new Error();
 });
 
 server.listen(PORT, () => {

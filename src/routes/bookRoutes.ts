@@ -2,6 +2,8 @@ import { Router, Request, Response, NextFunction } from "express";
 import { getBooksHandler } from "../handlers/routeHandlers";
 import { getBooksError } from "../errors/getBooksError";
 import { postBooksError } from "../errors/postBooksError";
+import { putBooksError } from "../errors/putBooksError";
+import { deleteBooksError } from "../errors/deleteBooksError";
 
 const router = Router();
 
@@ -64,7 +66,7 @@ router.post("/books", async (req: Request, res: Response, next: NextFunction) =>
 
 // Update a book by ID
 router.put("/books/:id", async (req: Request, res: Response, next: NextFunction) => {
-    const bookId = parseInt(req.params.id);
+    try{const bookId = parseInt(req.params.id);
     const bookIndex = books.findIndex(b => b.id === bookId);
 
     if (bookIndex !== -1) {
@@ -75,12 +77,14 @@ router.put("/books/:id", async (req: Request, res: Response, next: NextFunction)
         };
     } else {
         res.status(404).json({ message: "Book not found" });
+    }} catch(err) {
+        next(new putBooksError());
     }
 });
 
 // Delete a book by id
 router.delete("/books/:id", async (req: Request, res: Response, next: NextFunction) => {
-    const bookId = parseInt(req.params.id);
+    try{const bookId = parseInt(req.params.id);
     const bookIndex = books.findIndex(b => b.id === bookId);
 
     if (bookIndex !== -1) {
@@ -88,6 +92,8 @@ router.delete("/books/:id", async (req: Request, res: Response, next: NextFuncti
         res.status(204).send().json({ message: `${bookId} has been deleted`});
     } else {
         res.status(404).json({ message: "Book not found"})
+    }} catch(err) {
+        next(new deleteBooksError);
     }
 });
 
