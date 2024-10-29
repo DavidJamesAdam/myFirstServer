@@ -1,13 +1,16 @@
 import express from "express";
-import bookRoutes from "./routes/bookRoutes";
+import routes from "./routes/bookRoutes";
 
-import { errorHandler } from "./utils/errorHandler";
+import { errorHandler } from "./handlers/errorHandler";
 
 const server = express();
 const PORT: number = 3000;
 
 server.use(express.json());
-server.use("/api", bookRoutes);
+server.use("/api", routes);
+
+// The error handler
+server.use(errorHandler);
 
 server.get("/", (req, res) => {
     res.send("Server is running.");
@@ -18,9 +21,6 @@ server.get("/", (req, res) => {
 server.all('*', (req, res) => {
     res.status(500).json({ message: 'An error has occcured'})
 });
-
-// The error handler
-server.use(errorHandler);
 
 server.listen(PORT, () => {
     // Log a message when the server is successfully running

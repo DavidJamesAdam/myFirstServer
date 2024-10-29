@@ -5,11 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const bookRoutes_1 = __importDefault(require("./routes/bookRoutes"));
-const errorHandler_1 = require("./utils/errorHandler");
+const errorHandler_1 = require("./handlers/errorHandler");
 const server = (0, express_1.default)();
 const PORT = 3000;
 server.use(express_1.default.json());
 server.use("/api", bookRoutes_1.default);
+// The error handler
+server.use(errorHandler_1.errorHandler);
 server.get("/", (req, res) => {
     res.send("Server is running.");
 });
@@ -18,8 +20,6 @@ server.get("/", (req, res) => {
 server.all('*', (req, res) => {
     res.status(500).json({ message: 'An error has occcured' });
 });
-// The error handler
-server.use(errorHandler_1.errorHandler);
 server.listen(PORT, () => {
     // Log a message when the server is successfully running
     console.log(`Server is running on http://localhost:${PORT}`);

@@ -1,4 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
+import { getBooksHandler } from "../handlers/routeHandlers";
+import { getBooksError } from "../errors/getBooksError";
+import { postBooksError } from "../errors/postBooksError";
 
 const router = Router();
 
@@ -15,15 +18,16 @@ const books: Book[] = [
 
 // Get all books
 router.get("/books", async (req: Request, res: Response, next: NextFunction) => {
-    try{
-        res.json(books);
-    } catch {
+    try {
+        await getBooksHandler(req, res, next);
+    } catch(err) {
         next();
     }
 });
 
 // Get a book by ID
 router.get("/books/:id", async (req: Request, res: Response, next: NextFunction) => {
+    try {
     const bookId = parseInt(req.params.id);
     const book = books.find(b=> b.id === bookId);
     if (book) {
@@ -31,11 +35,14 @@ router.get("/books/:id", async (req: Request, res: Response, next: NextFunction)
     } else {
         res.status(404).json({ message: "Book not found" });
     }
+} catch(err) {
+    next(new getBooksError());
+}
 });
 
 // Create a new book
-router.post("/books", (req: Request, res: Response, next: NextFunction) => {
-    const newBook: Book = {
+router.post("/books", async (req: Request, res: Response, next: NextFunction) => {
+    try {const newBook: Book = {
         id: books.length + 1,
         title: req.body.title,
         author: req.body.author
@@ -50,11 +57,13 @@ router.post("/books", (req: Request, res: Response, next: NextFunction) => {
     } else {
         books.push(newBook);
         res.status(201).json({ message: "book successfully added", newBook });
+    }} catch(err){
+        next(new postBooksError());
     }
 });
 
 // Update a book by ID
-router.put("/books/:id", (req: Request, res: Response, next: NextFunction) => {
+router.put("/books/:id", async (req: Request, res: Response, next: NextFunction) => {
     const bookId = parseInt(req.params.id);
     const bookIndex = books.findIndex(b => b.id === bookId);
 
@@ -70,7 +79,7 @@ router.put("/books/:id", (req: Request, res: Response, next: NextFunction) => {
 });
 
 // Delete a book by id
-router.delete("/books/:id", (req: Request, res: Response, next: NextFunction) => {
+router.delete("/books/:id", async (req: Request, res: Response, next: NextFunction) => {
     const bookId = parseInt(req.params.id);
     const bookIndex = books.findIndex(b => b.id === bookId);
 
