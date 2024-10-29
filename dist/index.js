@@ -9,10 +9,7 @@ const errorHandler_1 = require("./utils/errorHandler");
 const server = (0, express_1.default)();
 const PORT = 3000;
 server.use(express_1.default.json());
-server.use("/api", bookRoutes_1.default);
-server.get("/", (req, res) => {
-    res.send("Server is running.");
-});
+server.use("/", bookRoutes_1.default);
 // Catch all error handler for all routes not defined
 // This can be a message, webpage, json, etc
 server.all('*', (req, res) => {

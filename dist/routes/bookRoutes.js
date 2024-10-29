@@ -29,11 +29,11 @@ router.get("/books", (req, res, next) => __awaiter(void 0, void 0, void 0, funct
 router.get("/books/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const bookId = parseInt(req.params.id);
     const book = books.find(b => b.id === bookId);
-    if (book) {
-        res.json(book);
+    if (!book) {
+        res.status(404).json({ error: `book with ID: ${bookId} not found` });
     }
     else {
-        res.status(404).json({ message: "Book not found" });
+        res.json(book);
     }
 }));
 // Create a new book

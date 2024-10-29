@@ -26,10 +26,10 @@ router.get("/books", async (req: Request, res: Response, next: NextFunction) => 
 router.get("/books/:id", async (req: Request, res: Response, next: NextFunction) => {
     const bookId = parseInt(req.params.id);
     const book = books.find(b=> b.id === bookId);
-    if (book) {
-        res.json(book);
+    if (!book) {
+        res.status(404).json({ error: `book with ID: ${bookId} not found` });
     } else {
-        res.status(404).json({ message: "Book not found" });
+        res.json(book);
     }
 });
 

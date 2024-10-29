@@ -7,11 +7,7 @@ const server = express();
 const PORT: number = 3000;
 
 server.use(express.json());
-server.use("/api", bookRoutes);
-
-server.get("/", (req, res) => {
-    res.send("Server is running.");
-})
+server.use("/", bookRoutes);
 
 // Catch all error handler for all routes not defined
 // This can be a message, webpage, json, etc
