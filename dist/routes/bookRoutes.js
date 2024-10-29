@@ -11,62 +11,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const routeHandlers_1 = require("../handlers/routeHandlers");
-const getBooksError_1 = require("../errors/getBooksError");
 const postBooksError_1 = require("../errors/postBooksError");
 const putBooksError_1 = require("../errors/putBooksError");
 const deleteBooksError_1 = require("../errors/deleteBooksError");
 const router = (0, express_1.Router)();
-;
-const books = [
-    { id: 1, title: "1984", author: "George Orwell" },
-    { id: 2, title: "Brave New World", author: "Aldous Huxley" }
-];
 // Get all books
 router.get("/books", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, routeHandlers_1.getBooksHandler)(req, res, next);
     }
     catch (err) {
-        next();
+        next(err);
     }
 }));
 // Get a book by ID
 router.get("/books/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const bookId = parseInt(req.params.id);
-        const book = books.find(b => b.id === bookId);
-        if (book) {
-            res.json(book);
-        }
-        else {
-            res.status(404).json({ message: "Book not found" });
-        }
+        const result = yield (0, routeHandlers_1.getBookByIdHandler)(req, res, next);
+        res.json(result);
     }
     catch (err) {
-        next(new getBooksError_1.getBooksError());
+        // next(new getBooksError());
+        res.status(404).json({ error: "book not found" });
     }
 }));
 // Create a new book
 router.post("/books", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newBook = {
-            id: books.length + 1,
-            title: req.body.title,
-            author: req.body.author
-        };
-        if (!req.body.title && !req.body.author) {
-            res.status(400).json({ message: "title and author required" });
-        }
-        else if (!req.body.title) {
-            res.status(400).json({ message: "title required" });
-        }
-        else if (!req.body.author) {
-            res.status(400).json({ message: "author required" });
-        }
-        else {
-            books.push(newBook);
-            res.status(201).json({ message: "book successfully added", newBook });
-        }
+        yield (0, routeHandlers_1.postBookHandler)(req, res, next);
     }
     catch (err) {
         next(new postBooksError_1.postBooksError());
@@ -75,18 +47,7 @@ router.post("/books", (req, res, next) => __awaiter(void 0, void 0, void 0, func
 // Update a book by ID
 router.put("/books/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const bookId = parseInt(req.params.id);
-        const bookIndex = books.findIndex(b => b.id === bookId);
-        if (bookIndex !== -1) {
-            books[bookIndex] = {
-                id: bookId,
-                title: req.body.title,
-                author: req.body.author
-            };
-        }
-        else {
-            res.status(404).json({ message: "Book not found" });
-        }
+        yield (0, routeHandlers_1.putBookHandler)(req, res, next);
     }
     catch (err) {
         next(new putBooksError_1.putBooksError());
@@ -95,15 +56,7 @@ router.put("/books/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, f
 // Delete a book by id
 router.delete("/books/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const bookId = parseInt(req.params.id);
-        const bookIndex = books.findIndex(b => b.id === bookId);
-        if (bookIndex !== -1) {
-            books.splice(bookIndex, 1);
-            res.status(204).send().json({ message: `${bookId} has been deleted` });
-        }
-        else {
-            res.status(404).json({ message: "Book not found" });
-        }
+        yield (0, routeHandlers_1.deleteBookHandler)(req, res, next);
     }
     catch (err) {
         next(new deleteBooksError_1.deleteBooksError);
