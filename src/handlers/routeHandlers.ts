@@ -24,19 +24,17 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
 };
 
 export async function getBookByIdHandler (req: Request, res: Response, next: NextFunction) {
+    const bookId = parseInt(req.params.id);
+    const book = books.find(b => b.id === bookId);
     try {
-        const bookId = parseInt(req.params.id);
-        const book = books.find(b => b.id === bookId);
-        // if (book) {
+        if (book) {
           res.json(book);
-        // } else {
-        //   res.status(404).json({ message: "Book not found" });
-        // }
+        } else {
+          res.status(404).json({ message: "Book not found" });
+        }
     } catch(err) {
-        // console.log(err)
-        // next(err);
-        // next(new getBooksError());
-        res.status(404).json({ error: "book not found"})
+        next(new getBooksError(bookId));
+        // res.status(404).json({ error: "book not found"})
     }
 }
 

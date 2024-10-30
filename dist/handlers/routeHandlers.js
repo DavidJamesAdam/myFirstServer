@@ -14,6 +14,7 @@ exports.getBookByIdHandler = getBookByIdHandler;
 exports.postBookHandler = postBookHandler;
 exports.putBookHandler = putBookHandler;
 exports.deleteBookHandler = deleteBookHandler;
+const getBooksError_1 = require("../errors/getBooksError");
 const postBooksError_1 = require("../errors/postBooksError");
 const putBooksError_1 = require("../errors/putBooksError");
 const deleteBooksError_1 = require("../errors/deleteBooksError");
@@ -35,20 +36,19 @@ function getBooksHandler(req, res, next) {
 ;
 function getBookByIdHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
+        const bookId = parseInt(req.params.id);
+        const book = books.find(b => b.id === bookId);
         try {
-            const bookId = parseInt(req.params.id);
-            const book = books.find(b => b.id === bookId);
-            // if (book) {
-            res.json(book);
-            // } else {
-            //   res.status(404).json({ message: "Book not found" });
-            // }
+            if (book) {
+                res.json(book);
+            }
+            else {
+                res.status(404).json({ message: "Book not found" });
+            }
         }
         catch (err) {
-            // console.log(err)
-            // next(err);
-            // next(new getBooksError());
-            res.status(404).json({ error: "book not found" });
+            next(new getBooksError_1.getBooksError(bookId));
+            // res.status(404).json({ error: "book not found"})
         }
     });
 }

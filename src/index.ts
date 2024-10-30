@@ -14,9 +14,9 @@ server.use(errorHandler);
 
 // Catch all error handler for all routes not defined
 // This can be a message, webpage, json, etc
-server.all('*', () => {
-    throw new Error();
-    // res.status(500).json({ message: "An error has occured."});
+server.all('*', (req, res) => {
+    // throw new Error();
+    res.status(500).json({ message: "An error has occured."});
 });
 
 server.listen(PORT, () => {
