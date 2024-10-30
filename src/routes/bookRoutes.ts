@@ -76,7 +76,8 @@ router.delete("/books/:id", (req: Request, res: Response, next: NextFunction) =>
 
     if (bookIndex !== -1) {
         books.splice(bookIndex, 1);
-        res.status(204).send().json({ message: `${bookId} has been deleted`});
+        res.status(204).json({ message: `${bookId} has been deleted`});
+        // res.status(204).send(`${bookId} has been deleted`);
     } else {
         res.status(404).json({ message: "Book not found"})
     }
