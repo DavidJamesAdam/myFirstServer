@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { deleteBooksError } from "../errors/deleteBooksError";
 import { PrismaClient } from "@prisma/client";
+import { Book, books } from "../utils/data";
+
 
 const prisma = new PrismaClient();
 
