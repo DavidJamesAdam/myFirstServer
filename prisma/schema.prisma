@@ -14,7 +14,7 @@ datasource db {
 }
 
 model books {
-  id      Int
+  id      Int    @id @default(autoincrement())
   title   String
   author  String
 }

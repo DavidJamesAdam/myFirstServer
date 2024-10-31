@@ -9,18 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBooksHandler = getBooksHandler;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-function getBooksHandler(req, res, next) {
+function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const book = yield prisma.books.findMany();
-        try {
-            res.json(book);
-        }
-        catch (err) {
-            next(err);
-        }
+        console.log(book);
     });
 }
-;
+main()
+    .then(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$disconnect();
+}))
+    .catch((e) => __awaiter(void 0, void 0, void 0, function* () {
+    console.error(e);
+    yield prisma.$disconnect();
+    process.exit(1);
+}));

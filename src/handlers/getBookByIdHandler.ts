@@ -1,10 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { getBooksError } from "../errors/getBooksError";
-import { books } from "../utils/data";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function getBookByIdHandler (req: Request, res: Response, next: NextFunction) {
-    const bookId = parseInt(req.params.id);
-    const book = books.find(b => b.id === bookId);
+    const id = req.params;
+    const book = await prisma.books.findUnique({
+        where: { id: Number(id) },
+    })
     try {
         if (book) {
           res.json(book);
@@ -14,6 +18,5 @@ export async function getBookByIdHandler (req: Request, res: Response, next: Nex
     } catch(err) {
         // next(new getBooksError(bookId));
         res.status(404).json({ error: `${err}`});
-        console.log(err);
     }
 }
