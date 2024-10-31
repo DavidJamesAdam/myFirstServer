@@ -1,13 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const routeHandlers_1 = require("../handlers/routeHandlers");
+const deleteBookHandler_1 = require("../handlers/deleteBookHandler");
+const getBookByIdHandler_1 = require("../handlers/getBookByIdHandler");
+const getBooksHandler_1 = require("../handlers/getBooksHandler");
+const postBookHandler_1 = require("../handlers/postBookHandler");
+const putBookHandler_1 = require("../handlers/putBookHandler");
 const router = (0, express_1.Router)();
 router.route("/books")
-    .get(routeHandlers_1.getBooksHandler)
-    .post(routeHandlers_1.postBookHandler);
+    .get(getBooksHandler_1.getBooksHandler)
+    .post(postBookHandler_1.postBookHandler);
 router.route("/books/:id")
-    .get(routeHandlers_1.getBookByIdHandler)
-    .put(routeHandlers_1.putBookHandler)
-    .delete(routeHandlers_1.deleteBookHandler);
+    .get(getBookByIdHandler_1.getBookByIdHandler)
+    .put(putBookHandler_1.putBookHandler)
+    .delete(deleteBookHandler_1.deleteBookHandler);
 exports.default = router;

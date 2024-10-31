@@ -23,3 +23,8 @@ Callbacks, Promises, Async/Await
 - https://www.youtube.com/watch?v=670f71LTWpM
 - https://www.youtube.com/watch?v=vn3tm0quoqE
 - https://www.youtube.com/watch?v=9j1dZwFEJ-c
+
+
+TODO:
+- Implement Prisma to properly query data in DB
+- Implement Schemas to check for input validation

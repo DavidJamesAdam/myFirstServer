@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { deleteBookHandler, getBookByIdHandler, getBooksHandler, postBookHandler, putBookHandler } from "../handlers/routeHandlers";
+import { deleteBookHandler } from '../handlers/deleteBookHandler';
+import { getBookByIdHandler } from '../handlers/getBookByIdHandler';
+import { getBooksHandler } from '../handlers/getBooksHandler';
+import { postBookHandler } from "../handlers/postBookHandler";
+import { putBookHandler } from "../handlers/putBookHandler";
 
 const router = Router();
 
