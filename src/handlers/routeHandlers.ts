@@ -30,11 +30,12 @@ export async function getBookByIdHandler (req: Request, res: Response, next: Nex
         if (book) {
           res.json(book);
         } else {
-          res.status(404).json({ message: "Book not found" });
+            throw new Error('book not found');
         }
     } catch(err) {
-        next(new getBooksError(bookId));
-        // res.status(404).json({ error: "book not found"})
+        // next(new getBooksError(bookId));
+        res.status(404).json({ error: `${err}`});
+        console.log(err);
     }
 }
 
