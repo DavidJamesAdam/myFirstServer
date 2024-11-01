@@ -12,18 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postBookHandler = postBookHandler;
 const postBooksError_1 = require("../errors/postBooksError");
 const client_1 = require("@prisma/client");
-const data_1 = require("../utils/data");
 const prisma = new client_1.PrismaClient();
 function postBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const newBook = {
-                id: data_1.books.length + 1,
-                title: req.body.title,
-                author: req.body.author
-            };
-            data_1.books.push(newBook);
-            res.status(201).json({ message: "book successfully added", newBook });
+            const { title, author } = req.body;
+            const book = yield prisma.books.create({
+                data: {
+                    title,
+                    author
+                }
+            });
+            res.json({ message: "Book successfully added",
+                book });
         }
         catch (err) {
             next(new postBooksError_1.postBooksError());

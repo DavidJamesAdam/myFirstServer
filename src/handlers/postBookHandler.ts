@@ -7,14 +7,16 @@ const prisma = new PrismaClient();
 
 export async function postBookHandler (req: Request, res: Response, next: NextFunction) {
     try {
-        const newBook: Book = {
-            id: books.length + 1,
-            title: req.body.title,
-            author: req.body.author
-        };
-    
-        books.push(newBook);
-        res.status(201).json({ message: "book successfully added", newBook });
+        const { title, author } = req.body;
+        const book = await prisma.books.create({
+            data: {
+                title,
+                author
+            }
+        })
+
+        res.json({message: "Book successfully added",
+                    book});
     } catch(err){
         next(new postBooksError());
     }
