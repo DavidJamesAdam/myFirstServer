@@ -1,5 +1,5 @@
 import express, { NextFunction } from "express";
-import routes from "./routes/bookRoutes";
+import routes from "./routes/routes";
 
 import { errorHandler } from "./handlers/errorHandler";
 
@@ -10,7 +10,7 @@ server.use(express.json());
 server.use("/", routes);
 
 // The error handler
-server.use(errorHandler);
+// server.use(errorHandler);
 
 // Catch all error handler for all routes not defined
 // This can be a message, webpage, json, etc

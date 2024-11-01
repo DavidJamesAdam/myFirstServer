@@ -10,23 +10,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postBookHandler = postBookHandler;
-const postBooksError_1 = require("../errors/postBooksError");
 const client_1 = require("@prisma/client");
+const express_validator_1 = require("express-validator");
 const prisma = new client_1.PrismaClient();
 function postBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const error = (0, express_validator_1.validationResult)(req);
             const { title, author } = req.body;
-            const book = yield prisma.books.create({
-                data: {
-                    title,
-                    author
-                }
-            });
-            res.json({ message: "Book successfully added", book });
+            console.log(error);
+            if (!error.isEmpty()) {
+                res.status(400).json({ error: error.array().map(error => error.msg) });
+                // throw new Error
+            }
+            else {
+                const book = yield prisma.books.create({
+                    data: {
+                        title,
+                        author
+                    }
+                });
+                res.json({ message: "Book successfully added", book });
+            }
         }
         catch (err) {
-            next(new postBooksError_1.postBooksError());
+            // next(new postBooksError());
         }
     });
 }

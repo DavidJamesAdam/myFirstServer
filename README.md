@@ -26,5 +26,5 @@ Callbacks, Promises, Async/Await
 
 
 TODO:
-- Implement Prisma to properly query data in DB
 - Implement Schemas to check for input validation
+- Figure out how to implement error handling (required field not present, body of request note present, etc)
