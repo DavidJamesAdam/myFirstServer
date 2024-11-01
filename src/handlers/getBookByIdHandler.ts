@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function getBookByIdHandler (req: Request, res: Response, next: NextFunction) {
-    const id = req.params;
+    const id = req.params.id;
     const book = await prisma.books.findUnique({
         where: { id: Number(id) },
     })

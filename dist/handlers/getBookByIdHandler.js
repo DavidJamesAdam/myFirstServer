@@ -14,7 +14,7 @@ const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function getBookByIdHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const id = req.params;
+        const id = req.params.id;
         const book = yield prisma.books.findUnique({
             where: { id: Number(id) },
         });
