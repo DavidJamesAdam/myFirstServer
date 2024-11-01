@@ -10,26 +10,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.putBookHandler = putBookHandler;
-const putBooksError_1 = require("../errors/putBooksError");
-const data_1 = require("../utils/data");
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 function putBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
+        const id = req.params.id;
+        const bookData = req.body;
         try {
-            const bookId = parseInt(req.params.id);
-            const bookIndex = data_1.books.findIndex(b => b.id === bookId);
-            if (bookIndex !== -1) {
-                data_1.books[bookIndex] = {
-                    id: bookId,
-                    title: req.body.title,
-                    author: req.body.author
-                };
+            const bookUpdate = yield prisma.books.update({ where: { id: Number(id) }, data: bookData });
+            if (bookUpdate) {
+                res.json(bookUpdate);
             }
             else {
-                res.status(404).json({ message: "Book not found" });
+                throw new Error("book not found");
             }
         }
         catch (err) {
-            next(new putBooksError_1.putBooksError());
+            // next(new putBooksError());
+            res.status(404).json({ error: `${err}` });
         }
     });
 }

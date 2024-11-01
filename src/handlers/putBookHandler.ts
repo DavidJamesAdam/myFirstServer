@@ -1,22 +1,23 @@
 import { Request, Response, NextFunction } from "express";
 import { putBooksError } from "../errors/putBooksError";
-import { books } from "../utils/data";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function putBookHandler (req: Request, res: Response, next: NextFunction) {
+    const id = req.params.id;
+    const bookData = req.body;
+
     try{
-        const bookId = parseInt(req.params.id);
-        const bookIndex = books.findIndex(b => b.id === bookId);
+        const bookUpdate = await prisma.books.update({ where: { id: Number(id) }, data: bookData });
         
-        if (bookIndex !== -1) {
-            books[bookIndex] = {
-                id: bookId,
-                title: req.body.title,
-                author: req.body.author
-            };
+        if (bookUpdate) {
+            res.json(bookUpdate);
         } else {
-            res.status(404).json({ message: "Book not found" });
+            throw new Error( "book not found" );
         }
     } catch(err) {
-        next(new putBooksError());
+        // next(new putBooksError());
+        res.status(404).json({ error: `${err}`})
     }
 }
