@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { postBooksError } from "../errors/postBooksError";
 import { PrismaClient } from "@prisma/client";
-import { Book, books } from "../utils/data";
 
 const prisma = new PrismaClient();
 
@@ -15,8 +14,7 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
             }
         })
 
-        res.json({message: "Book successfully added",
-                    book});
+        res.json({message: "Book successfully added", book});
     } catch(err){
         next(new postBooksError());
     }

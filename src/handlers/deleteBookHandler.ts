@@ -1,20 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { deleteBooksError } from "../errors/deleteBooksError";
 import { PrismaClient } from "@prisma/client";
-import { Book, books } from "../utils/data";
-
 
 const prisma = new PrismaClient();
 
 export async function deleteBookHandler (req: Request, res: Response, next: NextFunction) {
-    try{
-        const bookId = parseInt(req.params.id);
-        const bookIndex = books.findIndex(b => b.id === bookId);
-
-        if (bookIndex !== -1) {
-            books.splice(bookIndex, 1);
-            res.status(204).json({ message: `${bookId} has been deleted`});
-        } else {
+    const id = req.params.id;
+    const book = await prisma.books.delete({ where: {id: Number(id)}})
+    
+    try {
+        if (book) {
+            res.status(204).json({ message: `${id} has been deleted`});
+        } else if (!book) {
             throw new Error("book not found" );
         }
     } catch(err) {

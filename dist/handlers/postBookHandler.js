@@ -23,8 +23,7 @@ function postBookHandler(req, res, next) {
                     author
                 }
             });
-            res.json({ message: "Book successfully added",
-                book });
+            res.json({ message: "Book successfully added", book });
         }
         catch (err) {
             next(new postBooksError_1.postBooksError());

@@ -11,18 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBookHandler = deleteBookHandler;
 const client_1 = require("@prisma/client");
-const data_1 = require("../utils/data");
 const prisma = new client_1.PrismaClient();
 function deleteBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
+        const id = req.params.id;
+        const book = yield prisma.books.delete({ where: { id: Number(id) } });
         try {
-            const bookId = parseInt(req.params.id);
-            const bookIndex = data_1.books.findIndex(b => b.id === bookId);
-            if (bookIndex !== -1) {
-                data_1.books.splice(bookIndex, 1);
-                res.status(204).json({ message: `${bookId} has been deleted` });
+            if (book) {
+                res.status(204).json({ message: `${id} has been deleted` });
             }
-            else {
+            else if (!book) {
                 throw new Error("book not found");
             }
         }
