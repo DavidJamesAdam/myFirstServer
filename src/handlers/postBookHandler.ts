@@ -6,15 +6,13 @@ import { validationResult } from "express-validator";
 const prisma = new PrismaClient();
 
 export async function postBookHandler (req: Request, res: Response, next: NextFunction) {
+    const error = validationResult(req);
+    const { title, author } = req.body;
+    console.log(error);
+    
     try {
-        const error = validationResult(req);
-        const { title, author } = req.body;
-
-        console.log(error);
-
         if (!error.isEmpty()) {
-            res.status(400).json({ error: error.array().map(error => error.msg) });
-            // throw new Error
+            throw new Error();
         } else { 
             const book = await prisma.books.create(
                 {
@@ -28,6 +26,6 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
         }
     } catch(err){
         // next(new postBooksError());
-        
+        res.status(400).json({ error: error.array().map(error => error.msg) });
     }
 }

@@ -15,13 +15,12 @@ const express_validator_1 = require("express-validator");
 const prisma = new client_1.PrismaClient();
 function postBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
+        const error = (0, express_validator_1.validationResult)(req);
+        const { title, author } = req.body;
+        console.log(error);
         try {
-            const error = (0, express_validator_1.validationResult)(req);
-            const { title, author } = req.body;
-            console.log(error);
             if (!error.isEmpty()) {
-                res.status(400).json({ error: error.array().map(error => error.msg) });
-                // throw new Error
+                throw new Error();
             }
             else {
                 const book = yield prisma.books.create({
@@ -35,6 +34,7 @@ function postBookHandler(req, res, next) {
         }
         catch (err) {
             // next(new postBooksError());
+            res.status(400).json({ error: error.array().map(error => error.msg) });
         }
     });
 }
