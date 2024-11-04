@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
 export async function postBookHandler (req: Request, res: Response, next: NextFunction) {
     const error = validationResult(req);
     const { title, author } = req.body;
-    console.log(error);
     
     try {
         if (!error.isEmpty()) {

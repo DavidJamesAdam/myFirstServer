@@ -17,7 +17,6 @@ function postBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const error = (0, express_validator_1.validationResult)(req);
         const { title, author } = req.body;
-        console.log(error);
         try {
             if (!error.isEmpty()) {
                 throw new Error();

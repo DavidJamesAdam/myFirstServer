@@ -23,6 +23,7 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
             res.json(allBooks);
         }
     } catch(err) {
+        
         next(err);
     }
 };
