@@ -1,7 +1,10 @@
 import { checkSchema } from 'express-validator';
 
-const bookSchema = checkSchema({
+export const bookByIdSchema = checkSchema({
     id: {
-      in: ['query']
+      in: ['params'],
+      exists: {
+        errorMessage: "Parameter 'id' is missing"
+      }
     }
   });
