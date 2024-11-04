@@ -2,6 +2,7 @@ import express, { NextFunction } from "express";
 import routes from "./routes/routes";
 
 import { errorHandler } from "./handlers/errorHandler";
+import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 
 const server = express();
 const PORT: number = 3000;

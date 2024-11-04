@@ -1,22 +1,32 @@
 import { Request, Response, NextFunction } from "express";
 import { getBooksError } from "../errors/getBooksError";
 import { PrismaClient } from "@prisma/client";
+import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 
 export async function getBookByIdHandler (req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
-    const book = await prisma.books.findUnique({
-        where: { id: Number(id) },
-    })
+
     try {
+        const book = await prisma.books.findUnique({
+            where: { id: Number(id) },
+        })
         if (book) {
           res.json(book);
         } else {
-            throw new Error('book not found');
+            throw new Error(`book with ID: ${id} not found`);
         }
     } catch(err) {
         // next(new getBooksError(bookId));
-        res.status(404).json({ error: `${err}`});
+        if (err instanceof PrismaClientValidationError) {
+            if (err.message.includes("Argument `id` is missing.")) {
+                res.status(400).json({ error: "Argument `id` is missing."});
+            } else {
+                res.status(400).json({ error: "Invalid request" });
+            }
+        } else {
+            res.status(404).json({ error: `${err}`});
+        }
     }
 }

@@ -5,14 +5,28 @@ const express_validator_1 = require("express-validator");
 exports.bookSchema = (0, express_validator_1.checkSchema)({
     title: {
         in: ['body'],
-        isString: true,
-        errorMessage: 'Title should be a string',
-        notEmpty: true,
+        exists: {
+            bail: true,
+            errorMessage: "Body must include 'title' field"
+        },
+        isString: {
+            errorMessage: 'Title should be a string',
+        },
+        notEmpty: {
+            errorMessage: 'Title should not be empty',
+        },
     },
     author: {
         in: ['body'],
-        isString: true,
-        errorMessage: 'Author should be a string',
-        notEmpty: true,
+        exists: {
+            bail: true,
+            errorMessage: "Body must include 'author' field"
+        },
+        isString: {
+            errorMessage: 'Author should be a string',
+        },
+        notEmpty: {
+            errorMessage: 'Author should not be empty',
+        },
     },
 });

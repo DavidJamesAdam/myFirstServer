@@ -11,24 +11,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBookByIdHandler = getBookByIdHandler;
 const client_1 = require("@prisma/client");
+const library_1 = require("@prisma/client/runtime/library");
 const prisma = new client_1.PrismaClient();
 function getBookByIdHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params.id;
-        const book = yield prisma.books.findUnique({
-            where: { id: Number(id) },
-        });
         try {
+            const book = yield prisma.books.findUnique({
+                where: { id: Number(id) },
+            });
             if (book) {
                 res.json(book);
             }
             else {
-                throw new Error('book not found');
+                throw new Error(`book with ID: ${id} not found`);
             }
         }
         catch (err) {
             // next(new getBooksError(bookId));
-            res.status(404).json({ error: `${err}` });
+            if (err instanceof library_1.PrismaClientValidationError) {
+                if (err.message.includes("Argument `id` is missing.")) {
+                    res.status(400).json({ error: "Argument `id` is missing." });
+                }
+                else {
+                    res.status(400).json({ error: "Invalid request" });
+                }
+            }
+            else {
+                res.status(404).json({ error: `${err}` });
+            }
         }
     });
 }
