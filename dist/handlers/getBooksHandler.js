@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBooksHandler = getBooksHandler;
 const client_1 = require("@prisma/client");
+const library_1 = require("@prisma/client/runtime/library");
 const prisma = new client_1.PrismaClient();
 function getBooksHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -27,7 +28,12 @@ function getBooksHandler(req, res, next) {
                 const booksByAuthor = yield prisma.books.findMany({
                     where: { author: bookAuthor },
                 });
-                res.json(booksByAuthor);
+                if (bookAuthor) {
+                    res.json(booksByAuthor);
+                }
+                else {
+                    throw new Error();
+                }
             }
             else {
                 const allBooks = yield prisma.books.findMany();
@@ -35,6 +41,10 @@ function getBooksHandler(req, res, next) {
             }
         }
         catch (err) {
+            console.log(err);
+            if (err instanceof library_1.PrismaClientKnownRequestError) {
+                res.status(404).json({ error: err.message });
+            }
             next(err);
         }
     });

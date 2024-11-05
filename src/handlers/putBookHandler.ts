@@ -29,6 +29,8 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
             } else {
                 res.status(400).json({ error: "Invalid request"});
             }
+            // console.log(err);
+            // res.status(400).json({ error: err.message});
         }
     }
 }
