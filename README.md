@@ -22,3 +22,9 @@ How To Use TypeScript With Express & Node (also goes into scripting in package.j
 Callbacks, Promises, Async/Await
 - https://www.youtube.com/watch?v=670f71LTWpM
 - https://www.youtube.com/watch?v=vn3tm0quoqE
+- https://www.youtube.com/watch?v=9j1dZwFEJ-c
+
+
+TODO:
+- Implement Schemas to check for input validation
+- Figure out how to implement error handling (required field not present, body of request note present, etc)
