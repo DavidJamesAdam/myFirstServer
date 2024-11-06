@@ -16,7 +16,6 @@ const express_validator_1 = require("express-validator");
 const prisma = new client_1.PrismaClient();
 function putBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
         const id = req.params.id;
         const { title, author } = req.body;
         const error = (0, express_validator_1.validationResult)(req);
@@ -26,37 +25,57 @@ function putBookHandler(req, res, next) {
                 updateData.title = title;
             if (author)
                 updateData.author = author;
-            const bookUpdate = yield prisma.books.update({ where: { id: Number(id) }, data: updateData });
-            if (bookUpdate.id) {
-                if (!req.body || Object.keys(req.body).length === 0) {
-                    throw new Error("title or author field required");
+            const uniqueId = yield prisma.books.findUniqueOrThrow({
+                where: {
+                    id: Number(id)
                 }
-                if (!error.isEmpty()) {
-                    throw new Error();
-                }
-                else {
-                    res.json(bookUpdate);
-                } //TODO: Check for existing title. Updated title must be unique
+            });
+            if (!req.body || Object.keys(req.body).length === 0) {
+                throw new Error("title or author field required");
+            }
+            if (!error.isEmpty()) {
+                throw new Error();
             }
             else {
-                throw new Error();
+                const alreadyExists = yield prisma.books.findFirst({
+                    where: { title: title }
+                });
+                if (alreadyExists) {
+                    console.log("nope");
+                    throw new Error("title already exists");
+                }
+                else {
+                    const bookUpdate = yield prisma.books.update({
+                        where: {
+                            id: Number(id)
+                        },
+                        data: updateData
+                    });
+                    res.json({ message: "book successfully updated", bookUpdate });
+                }
             }
         }
         catch (err) {
+            console.log(err);
             if (err instanceof library_1.PrismaClientKnownRequestError) {
                 if (err.code === "P2025") {
                     // ID not found error
-                    const cause = (_a = err.meta) === null || _a === void 0 ? void 0 : _a.cause;
-                    res.status(404).json({ error: cause });
+                    res.status(404).json({ error: err.message });
                 }
             }
             else if (err instanceof library_1.PrismaClientValidationError) {
                 // Checking for path errors or if the id is missing in path
                 res.status(400).json({ error: "Argument `id` is missing." });
             }
-            else {
-                // Checking for validation errors
+            else if (!error.isEmpty()) {
+                // Checking for schema validation errors
                 res.status(400).json({ error: error.array().map(error => error.msg) });
+            }
+            else if (err instanceof Error) {
+                res.status(400).json({ error: err.message });
+            }
+            else {
+                next();
             }
         }
     });

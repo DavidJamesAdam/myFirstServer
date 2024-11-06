@@ -15,33 +15,52 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
     try { 
         if (title) updateData.title = title;
         if (author) updateData.author = author;
-        const bookUpdate = await prisma.books.update({ where: { id: Number(id) }, data: updateData });
 
-        if (bookUpdate.id) {
-            if (!req.body || Object.keys(req.body).length === 0) {
-                throw new Error("title or author field required");
+        const uniqueId = await prisma.books.findUniqueOrThrow({
+            where: { 
+                id: Number(id) 
             }
-            if(!error.isEmpty()) {
-                throw new Error();
-            } else {
-                res.json(bookUpdate);
-            } //TODO: Check for existing title. Updated title must be unique
-        } else {
-            throw new Error();
+        });
+
+        if (!req.body || Object.keys(req.body).length === 0) {
+            throw new Error("title or author field required");
         }
+        if (!error.isEmpty()) {
+            throw new Error();
+        } else {
+            const alreadyExists = await prisma.books.findFirst({
+                where: {title: title}
+            });
+            if(alreadyExists) {
+                console.log("nope");
+                throw new Error("title already exists")
+            } else {
+                const bookUpdate = await prisma.books.update({ 
+                    where: { 
+                        id: Number(id) 
+                        },
+                        data: updateData 
+                    });
+                res.json({ message: "book successfully updated", bookUpdate });
+            }
+        } 
     } catch(err) {
+        console.log(err);
         if (err instanceof PrismaClientKnownRequestError) {
             if (err.code === "P2025") {
                 // ID not found error
-                const cause = err.meta?.cause;
-                res.status(404).json({ error: cause });
+                res.status(404).json({ error: err.message });
             }
         } else if (err instanceof PrismaClientValidationError) {
             // Checking for path errors or if the id is missing in path
             res.status(400).json({ error: "Argument `id` is missing."});
-        } else {
-            // Checking for validation errors
+        } else if (!error.isEmpty()) {
+            // Checking for schema validation errors
             res.status(400).json({ error: error.array().map(error => error.msg) });
+        } else if (err instanceof Error) {
+            res.status(400).json({ error: err.message });
+        } else {
+            next();
         }
     }
 }
