@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { getBooksError } from "../errors/getBooksError";
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 

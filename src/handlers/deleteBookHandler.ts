@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { deleteBooksError } from "../errors/deleteBooksError";
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
 

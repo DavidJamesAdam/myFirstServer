@@ -40,7 +40,6 @@ function postBookHandler(req, res, next) {
             }
         }
         catch (err) {
-            // next(new postBooksError());
             if (!error.isEmpty()) {
                 res.status(400).json({ error: error.array().map(error => error.msg) });
             }

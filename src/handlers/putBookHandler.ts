@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { putBooksError } from "../errors/putBooksError";
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientKnownRequestError, PrismaClientValidationError, skip } from "@prisma/client/runtime/library";
+import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
 import { validationResult } from "express-validator";
 
 const prisma = new PrismaClient();
@@ -32,7 +31,6 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
                 where: {title: title}
             });
             if(alreadyExists) {
-                console.log("nope");
                 throw new Error("title already exists")
             } else {
                 const bookUpdate = await prisma.books.update({ 
@@ -45,7 +43,6 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
             }
         } 
     } catch(err) {
-        console.log(err);
         if (err instanceof PrismaClientKnownRequestError) {
             if (err.code === "P2025") {
                 // ID not found error

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
+import { PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 

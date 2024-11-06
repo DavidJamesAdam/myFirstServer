@@ -41,7 +41,6 @@ function putBookHandler(req, res, next) {
                     where: { title: title }
                 });
                 if (alreadyExists) {
-                    console.log("nope");
                     throw new Error("title already exists");
                 }
                 else {
@@ -56,7 +55,6 @@ function putBookHandler(req, res, next) {
             }
         }
         catch (err) {
-            console.log(err);
             if (err instanceof library_1.PrismaClientKnownRequestError) {
                 if (err.code === "P2025") {
                     // ID not found error
