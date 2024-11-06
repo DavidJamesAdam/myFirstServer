@@ -2,17 +2,23 @@ import { Request, Response, NextFunction } from "express";
 import { putBooksError } from "../errors/putBooksError";
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
+import { validationResult } from "express-validator";
 
 const prisma = new PrismaClient();
 
 export async function putBookHandler (req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
-    const bookData = req.body;
+    const { title, author } = req.body;
+    const error = validationResult(req);
 
     try {
-        const bookUpdate = await prisma.books.update({ where: { id: Number(id) }, data: bookData });
+        const bookUpdate = await prisma.books.update({ where: { id: Number(id) }, data: { title, author } });
         if (bookUpdate.id) {
-            res.json(bookUpdate);
+            if(!error.isEmpty()) {
+                throw new Error();
+            } else {
+                res.json(bookUpdate);
+            } //TODO: Check for existing title. Updated title must be unique
         } else {
             throw new Error();
         }
@@ -29,8 +35,8 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
             } else {
                 res.status(400).json({ error: "Invalid request"});
             }
-            // console.log(err);
-            // res.status(400).json({ error: err.message});
+        } else {
+            res.status(400).json({ error: error.array().map(error => error.msg) });
         }
     }
 }

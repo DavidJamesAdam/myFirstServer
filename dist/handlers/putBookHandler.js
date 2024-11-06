@@ -12,16 +12,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.putBookHandler = putBookHandler;
 const client_1 = require("@prisma/client");
 const library_1 = require("@prisma/client/runtime/library");
+const express_validator_1 = require("express-validator");
 const prisma = new client_1.PrismaClient();
 function putBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
         const id = req.params.id;
-        const bookData = req.body;
+        const { title, author } = req.body;
+        const error = (0, express_validator_1.validationResult)(req);
         try {
-            const bookUpdate = yield prisma.books.update({ where: { id: Number(id) }, data: bookData });
+            const bookUpdate = yield prisma.books.update({ where: { id: Number(id) }, data: { title, author } });
             if (bookUpdate.id) {
-                res.json(bookUpdate);
+                if (!error.isEmpty()) {
+                    throw new Error();
+                }
+                else {
+                    res.json(bookUpdate);
+                } //TODO: Check for existing title. Updated title must be unique
             }
             else {
                 throw new Error();
@@ -42,8 +49,9 @@ function putBookHandler(req, res, next) {
                 else {
                     res.status(400).json({ error: "Invalid request" });
                 }
-                // console.log(err);
-                // res.status(400).json({ error: err.message});
+            }
+            else {
+                res.status(400).json({ error: error.array().map(error => error.msg) });
             }
         }
     });

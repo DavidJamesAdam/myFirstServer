@@ -13,18 +13,29 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
         if (!error.isEmpty()) {
             throw new Error();
         } else { 
+            const alreadyExists = await prisma.books.findFirst({
+                where: {title: title}
+            });
+            if(alreadyExists) {
+                throw new Error()
+            } else {
             const book = await prisma.books.create(
                 {
                     data: {
                         title,
                         author
+                        }
                     }
-                }
-            )
-            res.json({message: "Book successfully added", book});
+                )
+                res.json({message: "Book successfully added", book});
+            }
         }
     } catch(err){
         // next(new postBooksError());
-        res.status(400).json({ error: error.array().map(error => error.msg) });
+        if(!error.isEmpty()){
+            res.status(400).json({ error: error.array().map(error => error.msg) });
+        } else {
+            res.status(400).json({ error: "title already exists" });
+        }
     }
 }

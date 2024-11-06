@@ -13,6 +13,6 @@ router.route("/books")
     .post(postBookSchema_1.bookSchema, postBookHandler_1.postBookHandler);
 router.route("/books/:id")
     .get(getBookByIdHandler_1.getBookByIdHandler)
-    .put(putBookHandler_1.putBookHandler)
+    .put(postBookSchema_1.bookSchema, putBookHandler_1.putBookHandler)
     .delete(deleteBookHandler_1.deleteBookHandler);
 exports.default = router;

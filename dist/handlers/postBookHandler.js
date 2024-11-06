@@ -22,18 +22,31 @@ function postBookHandler(req, res, next) {
                 throw new Error();
             }
             else {
-                const book = yield prisma.books.create({
-                    data: {
-                        title,
-                        author
-                    }
+                const alreadyExists = yield prisma.books.findFirst({
+                    where: { title: title }
                 });
-                res.json({ message: "Book successfully added", book });
+                if (alreadyExists) {
+                    throw new Error();
+                }
+                else {
+                    const book = yield prisma.books.create({
+                        data: {
+                            title,
+                            author
+                        }
+                    });
+                    res.json({ message: "Book successfully added", book });
+                }
             }
         }
         catch (err) {
             // next(new postBooksError());
-            res.status(400).json({ error: error.array().map(error => error.msg) });
+            if (!error.isEmpty()) {
+                res.status(400).json({ error: error.array().map(error => error.msg) });
+            }
+            else {
+                res.status(400).json({ error: "title already exists" });
+            }
         }
     });
 }

@@ -15,7 +15,7 @@ router.route("/books")
 
 router.route("/books/:id")
         .get(getBookByIdHandler)
-        .put(putBookHandler)
+        .put(bookSchema, putBookHandler)
         .delete(deleteBookHandler);
 
 export default router;

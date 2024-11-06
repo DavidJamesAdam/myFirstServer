@@ -10,7 +10,7 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
 
     try {
         if (typeof bookTitle === 'string') {
-            const singleBook = await prisma.books.findUniqueOrThrow({
+            const singleBook = await prisma.books.findFirstOrThrow({
                 where: { title: bookTitle },
             });
             res.json(singleBook);
@@ -18,10 +18,11 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
             const booksByAuthor = await prisma.books.findMany({
                 where: { author: bookAuthor },
             });
-            if (bookAuthor) {
-                res.json(booksByAuthor);
-            } else {
+
+            if (!booksByAuthor.length) {
                 throw new Error();
+            } else {
+                res.json(booksByAuthor);
             }
         } else {
             const allBooks =  await prisma.books.findMany()
@@ -31,8 +32,9 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
         console.log(err);
         if (err instanceof PrismaClientKnownRequestError) {
                 res.status(404).json({ error: err.message });
+            } else {
+                res.status(404).json({ error: "Author not found"})
             }
-
         next(err);
     }
 };
