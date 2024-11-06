@@ -6,6 +6,7 @@ import { postBookHandler } from "../handlers/postBookHandler";
 import { putBookHandler } from "../handlers/putBookHandler";
 import { bookSchema } from "../utils/schemas/postBookSchema";
 import { bookByIdSchema } from "../utils/schemas/getBookByIdSchema";
+import { putBookSchema } from "../utils/schemas/putBookSchema";
 
 const router = Router();
 
@@ -15,7 +16,7 @@ router.route("/books")
 
 router.route("/books/:id")
         .get(getBookByIdHandler)
-        .put(bookSchema, putBookHandler)
+        .put(putBookSchema, putBookHandler)
         .delete(deleteBookHandler);
 
 export default router;

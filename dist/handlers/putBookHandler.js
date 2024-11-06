@@ -20,9 +20,17 @@ function putBookHandler(req, res, next) {
         const id = req.params.id;
         const { title, author } = req.body;
         const error = (0, express_validator_1.validationResult)(req);
+        const updateData = {};
         try {
-            const bookUpdate = yield prisma.books.update({ where: { id: Number(id) }, data: { title, author } });
+            if (title)
+                updateData.title = title;
+            if (author)
+                updateData.author = author;
+            const bookUpdate = yield prisma.books.update({ where: { id: Number(id) }, data: updateData });
             if (bookUpdate.id) {
+                if (!req.body || Object.keys(req.body).length === 0) {
+                    throw new Error("title or author field required");
+                }
                 if (!error.isEmpty()) {
                     throw new Error();
                 }
@@ -35,22 +43,19 @@ function putBookHandler(req, res, next) {
             }
         }
         catch (err) {
-            // next(new putBooksError());
             if (err instanceof library_1.PrismaClientKnownRequestError) {
                 if (err.code === "P2025") {
+                    // ID not found error
                     const cause = (_a = err.meta) === null || _a === void 0 ? void 0 : _a.cause;
                     res.status(404).json({ error: cause });
                 }
             }
             else if (err instanceof library_1.PrismaClientValidationError) {
-                if (err.message.includes("Argument `id` is missing.")) {
-                    res.status(400).json({ error: "Argument `id` is missing." });
-                }
-                else {
-                    res.status(400).json({ error: "Invalid request" });
-                }
+                // Checking for path errors or if the id is missing in path
+                res.status(400).json({ error: "Argument `id` is missing." });
             }
             else {
+                // Checking for validation errors
                 res.status(400).json({ error: error.array().map(error => error.msg) });
             }
         }

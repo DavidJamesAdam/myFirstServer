@@ -30,12 +30,7 @@ function getBookByIdHandler(req, res, next) {
         catch (err) {
             // next(new getBooksError(bookId));
             if (err instanceof library_1.PrismaClientValidationError) {
-                if (err.message.includes("Argument `id` is missing.")) {
-                    res.status(400).json({ error: "Argument `id` is missing." });
-                }
-                else {
-                    res.status(400).json({ error: "Invalid request" });
-                }
+                res.status(400).json({ error: "Argument `id` is missing." });
             }
             else {
                 res.status(404).json({ error: `${err}` });

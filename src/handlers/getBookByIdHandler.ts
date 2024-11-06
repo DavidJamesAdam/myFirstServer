@@ -20,11 +20,7 @@ export async function getBookByIdHandler (req: Request, res: Response, next: Nex
     } catch(err) {
         // next(new getBooksError(bookId));
         if (err instanceof PrismaClientValidationError) {
-            if (err.message.includes("Argument `id` is missing.")) {
-                res.status(400).json({ error: "Argument `id` is missing."});
-            } else {
-                res.status(400).json({ error: "Invalid request" });
-            }
+            res.status(400).json({ error: "Argument `id` is missing."});
         } else {
             res.status(404).json({ error: `${err}`});
         }

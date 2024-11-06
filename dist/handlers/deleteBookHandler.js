@@ -29,18 +29,15 @@ function deleteBookHandler(req, res, next) {
         catch (err) {
             // next(new deleteBooksError);
             if (err instanceof library_1.PrismaClientKnownRequestError) {
+                // Checking if ID not found
                 if (err.code === "P2025") {
                     const cause = (_a = err.meta) === null || _a === void 0 ? void 0 : _a.cause;
                     res.status(404).json({ error: cause });
                 }
             }
             else if (err instanceof library_1.PrismaClientValidationError) {
-                if (err.message.includes("Argument `id` is missing.")) {
-                    res.status(400).json({ error: "Argument `id` is missing." });
-                }
-                else {
-                    res.status(400).json({ error: "Invalid request" });
-                }
+                // Checking for path errors or if the id is missing in path
+                res.status(400).json({ error: "Argument `id` is missing." });
             }
         }
     });

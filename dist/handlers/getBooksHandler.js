@@ -43,6 +43,7 @@ function getBooksHandler(req, res, next) {
         catch (err) {
             console.log(err);
             if (err instanceof library_1.PrismaClientKnownRequestError) {
+                // No books found error
                 res.status(404).json({ error: err.message });
             }
             else {

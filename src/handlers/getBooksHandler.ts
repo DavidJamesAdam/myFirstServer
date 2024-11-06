@@ -31,6 +31,7 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
     } catch(err) {
         console.log(err);
         if (err instanceof PrismaClientKnownRequestError) {
+                // No books found error
                 res.status(404).json({ error: err.message });
             } else {
                 res.status(404).json({ error: "Author not found"})
