@@ -8,10 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBooksHandler = getBooksHandler;
 const client_1 = require("@prisma/client");
-const library_1 = require("@prisma/client/runtime/library");
+const notFOundError_1 = __importDefault(require("../errors/notFOundError"));
 const prisma = new client_1.PrismaClient();
 function getBooksHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -19,17 +22,22 @@ function getBooksHandler(req, res, next) {
         const bookAuthor = req.query.author;
         try {
             if (typeof bookTitle === 'string') {
-                const singleBook = yield prisma.books.findFirstOrThrow({
+                const singleBook = yield prisma.books.findFirst({
                     where: { title: bookTitle },
                 });
-                res.json(singleBook);
+                if (!singleBook) {
+                    throw new notFOundError_1.default({ code: 404, message: "No books found" });
+                }
+                else {
+                    res.json(singleBook);
+                }
             }
             else if (typeof bookAuthor === 'string') {
                 const booksByAuthor = yield prisma.books.findMany({
                     where: { author: bookAuthor },
                 });
                 if (!booksByAuthor.length) {
-                    throw new Error();
+                    throw new notFOundError_1.default({ code: 404, message: "Author not found" });
                 }
                 else {
                     res.json(booksByAuthor);
@@ -41,14 +49,7 @@ function getBooksHandler(req, res, next) {
             }
         }
         catch (err) {
-            console.log(err);
-            if (err instanceof library_1.PrismaClientKnownRequestError) {
-                // No books found error
-                res.status(404).json({ error: err.message });
-            }
-            else {
-                res.status(404).json({ error: "Author not found" });
-            }
+            // getBooksError(<Error>err, res, next);
             next(err);
         }
     });

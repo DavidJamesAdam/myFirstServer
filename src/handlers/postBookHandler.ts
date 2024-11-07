@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { validationResult } from "express-validator";
+// import { postBooksError } from "../errors/postBooksError";
 
 const prisma = new PrismaClient();
 
@@ -35,5 +36,6 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
         } else {
             res.status(400).json({ error: "title already exists" });
         }
+        // postBooksError(error, res);
     }
 }

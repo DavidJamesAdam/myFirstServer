@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postBookHandler = postBookHandler;
 const client_1 = require("@prisma/client");
 const express_validator_1 = require("express-validator");
+// import { postBooksError } from "../errors/postBooksError";
 const prisma = new client_1.PrismaClient();
 function postBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -46,6 +47,7 @@ function postBookHandler(req, res, next) {
             else {
                 res.status(400).json({ error: "title already exists" });
             }
+            // postBooksError(error, res);
         }
     });
 }

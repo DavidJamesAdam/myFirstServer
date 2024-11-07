@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
+import { getBooksError } from "../errors/getBooksError";
+import NotFoundError from "../errors/notFOundError";
 
 const prisma = new PrismaClient();
 
@@ -10,17 +12,21 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
 
     try {
         if (typeof bookTitle === 'string') {
-            const singleBook = await prisma.books.findFirstOrThrow({
+            const singleBook = await prisma.books.findFirst({
                 where: { title: bookTitle },
             });
-            res.json(singleBook);
+            if (!singleBook) {
+                    throw new NotFoundError({ code: 404, message: "No books found" });
+                } else {
+                    res.json(singleBook);
+                }
         } else if (typeof bookAuthor === 'string') {
             const booksByAuthor = await prisma.books.findMany({
                 where: { author: bookAuthor },
             });
 
             if (!booksByAuthor.length) {
-                throw new Error();
+                throw new NotFoundError({ code: 404, message: "Author not found" });
             } else {
                 res.json(booksByAuthor);
             }
@@ -29,13 +35,7 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
             res.json(allBooks);
         }
     } catch(err) {
-        console.log(err);
-        if (err instanceof PrismaClientKnownRequestError) {
-                // No books found error
-                res.status(404).json({ error: err.message });
-            } else {
-                res.status(404).json({ error: "Author not found"})
-            }
+        // getBooksError(<Error>err, res, next);
         next(err);
     }
 };

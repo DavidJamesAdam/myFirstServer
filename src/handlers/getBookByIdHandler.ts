@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientValidationError } from "@prisma/client/runtime/library";
+import BadRequestError from "../errors/badRequestError";
 
 const prisma = new PrismaClient();
 
@@ -14,14 +15,9 @@ export async function getBookByIdHandler (req: Request, res: Response, next: Nex
         if (book) {
           res.json(book);
         } else {
-            throw new Error(`book with ID: ${id} not found`);
+            throw new BadRequestError({code: 400, message: `book with ID: ${id} not found`});
         }
     } catch(err) {
-        // next(new getBooksError(bookId));
-        if (err instanceof PrismaClientValidationError) {
-            res.status(400).json({ error: "Argument `id` is missing."});
-        } else {
-            res.status(404).json({ error: `${err}`});
-        }
+        next(err);
     }
 }
