@@ -12,6 +12,7 @@ Error handling for APIs:
 https://www.youtube.com/watch?v=xnedbgDoRkA (video 91, 92, and 93)
 https://expressjs.com/en/guide/error-handling.html
 https://www.youtube.com/watch?v=7WGVCx7Detc
+https://medium.com/@xiaominghu19922/proper-error-handling-in-express-server-with-typescript-8cd4ffb67188
 
 What is Express?
 - Exporess JS is a web application framework. It's a layer built on top of Node that helps manage servers and routes.
@@ -26,5 +27,4 @@ Callbacks, Promises, Async/Await
 
 
 TODO:
-- Implement Schemas to check for input validation
 - Figure out how to implement error handling (required field not present, body of request note present, etc)
