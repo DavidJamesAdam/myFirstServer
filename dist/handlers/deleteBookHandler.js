@@ -1,6 +1,5 @@
 "use strict";
-// TODO: need to handle imporper path variable
-// - Can a message be sent to confirm book has been deleted?
+// All positive test cases and error handling done
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -22,13 +21,15 @@ function deleteBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params.id;
         try {
-            const book = yield prisma.books.delete({ where: { id: Number(id) } });
-            if (book) {
-                res.status(204).json({ message: `${id} has been deleted` });
-            }
-            else {
-                throw new notFoundError_1.default({ code: 404, message: `book with ID: ${id} not found` });
-            }
+            const book = yield prisma.books.delete({
+                where: { id: Number(id) }
+            }).catch(() => {
+                throw new notFoundError_1.default({
+                    code: 404,
+                    message: `book with ID: ${id} not found`
+                });
+            });
+            res.status(204).send();
         }
         catch (err) {
             next(err);

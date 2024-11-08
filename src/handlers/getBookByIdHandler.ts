@@ -1,4 +1,6 @@
-// TODO: Need to adjust how imporper path is handled
+// All positive test cases and error handling done
+// Maybe check to see if there are different ways to verify id parameter
+// Create own get request type in Express
 
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
@@ -10,14 +12,16 @@ export async function getBookByIdHandler (req: Request, res: Response, next: Nex
     const id = req.params.id;
 
     try {
-        const book = await prisma.books.findUnique({
+        const book = await prisma.books.findUniqueOrThrow({
             where: { id: Number(id) },
-        })
-        if (book) {
-          res.json(book);
-        } else {
-            throw new NotFoundError({code: 404, message: `book with ID: ${id} not found`});
-        }
+        }).catch(() => 
+            {
+                throw new NotFoundError({ 
+                    code: 404, 
+                    message: `book with ID: ${id} not found`
+                })
+            });
+        res.json(book);
     } catch(err) {
         next(err);
     }

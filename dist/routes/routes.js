@@ -9,6 +9,7 @@ const putBookHandler_1 = require("../handlers/putBookHandler");
 const postBookSchema_1 = require("../utils/schemas/postBookSchema");
 const putBookSchema_1 = require("../utils/schemas/putBookSchema");
 const router = (0, express_1.Router)();
+// /books/:bookId?
 router.route("/books")
     .get(getBooksHandler_1.getBooksHandler)
     .post(postBookSchema_1.bookSchema, postBookHandler_1.postBookHandler);

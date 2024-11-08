@@ -4,17 +4,37 @@ import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { validationResult } from "express-validator";
 import BadRequestError from "../errors/badRequestError";
-// import { postBooksError } from "../errors/postBooksError";
 
 const prisma = new PrismaClient();
 
 export async function postBookHandler (req: Request, res: Response, next: NextFunction) {
-    const error = validationResult(req);
-    const { title, author } = req.body;
+
     
     try {
+        const error = validationResult(req).mapped();
+        const { title, author } = req.body;
+
+        // throw new BadRequestError({ code: 400, message: JSON.stringify(error.array().map(error => error.msg))});
+
+        // const alreadyExists = await prisma.books.findFirst({
+        //     where: {title: title}
+        // });
+        // if(alreadyExists) {
+        //     throw new BadRequestError({ code: 400, message: "title already exists"});
+        // } else {
+        // const book = await prisma.books.create(
+        //     {
+        //         data: {
+        //                 title,
+        //                 author
+        //             }
+        //         }
+        //     )
+        //     res.json({message: "Book successfully added", book});
+        // }
+        
         if (!error.isEmpty()) {
-            throw new BadRequestError({ code: 400, message: JSON.stringify(error.array().map(error => error.msg))});
+            throw new BadRequestError({ code: 400, message: error});
         } else { 
             const alreadyExists = await prisma.books.findFirst({
                 where: {title: title}
@@ -25,8 +45,8 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
             const book = await prisma.books.create(
                 {
                     data: {
-                        title,
-                        author
+                            title,
+                            author
                         }
                     }
                 )
@@ -34,6 +54,7 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
             }
         }
     } catch(err){
+        // console.log(err);
         next(err);
     }
 }

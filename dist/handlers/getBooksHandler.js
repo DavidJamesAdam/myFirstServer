@@ -23,22 +23,27 @@ function getBooksHandler(req, res, next) {
         const bookAuthor = req.query.author;
         try {
             if (typeof bookTitle === 'string') {
-                const singleBook = yield prisma.books.findFirst({
-                    where: { title: bookTitle },
+                const singleBook = yield prisma.books.findFirstOrThrow({
+                    where: {
+                        title: bookTitle
+                    },
+                }).catch(() => {
+                    throw new notFoundError_1.default({
+                        code: 404,
+                        message: "title not found"
+                    });
                 });
-                if (!singleBook) {
-                    throw new notFoundError_1.default({ code: 404, message: "title not found" });
-                }
-                else {
-                    res.json(singleBook);
-                }
+                res.json(singleBook);
             }
             else if (typeof bookAuthor === 'string') {
                 const booksByAuthor = yield prisma.books.findMany({
                     where: { author: bookAuthor },
                 });
                 if (!booksByAuthor.length) {
-                    throw new notFoundError_1.default({ code: 404, message: "Author not found" });
+                    throw new notFoundError_1.default({
+                        code: 404,
+                        message: "Author not found"
+                    });
                 }
                 else {
                     res.json(booksByAuthor);

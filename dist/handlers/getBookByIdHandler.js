@@ -1,5 +1,7 @@
 "use strict";
-// TODO: Need to adjust how imporper path is handled
+// All positive test cases and error handling done
+// Maybe check to see if there are different ways to verify id parameter
+// Create own get request type in Express
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -21,15 +23,15 @@ function getBookByIdHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params.id;
         try {
-            const book = yield prisma.books.findUnique({
+            const book = yield prisma.books.findUniqueOrThrow({
                 where: { id: Number(id) },
+            }).catch(() => {
+                throw new notFoundError_1.default({
+                    code: 404,
+                    message: `book with ID: ${id} not found`
+                });
             });
-            if (book) {
-                res.json(book);
-            }
-            else {
-                throw new notFoundError_1.default({ code: 404, message: `book with ID: ${id} not found` });
-            }
+            res.json(book);
         }
         catch (err) {
             next(err);

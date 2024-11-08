@@ -1,8 +1,6 @@
 "use strict";
-// TODO: need to handle improper path variable
-// - If ID doesn't exist
+// TODO: 
 // - Schema validation
-// - If neither ititle nor field exist in body
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -28,31 +26,42 @@ function putBookHandler(req, res, next) {
         const { title, author } = req.body;
         const error = (0, express_validator_1.validationResult)(req);
         const updateData = {};
+        if (title)
+            updateData.title = title;
+        if (author)
+            updateData.author = author;
         try {
-            if (title)
-                updateData.title = title;
-            if (author)
-                updateData.author = author;
-            const uniqueId = yield prisma.books.findUnique({
+            const uniqueId = yield prisma.books.findUniqueOrThrow({
                 where: {
                     id: Number(id)
                 }
+            }).catch(() => {
+                throw new notFoundError_1.default({
+                    code: 404,
+                    message: `book with ID: ${id} not found`
+                });
             });
-            if (!uniqueId) {
-                throw new notFoundError_1.default({ code: 404, message: JSON.stringify(error.array().map(error => error.msg)) });
-            }
             if (!req.body || Object.keys(req.body).length === 0) {
-                throw new badRequestError_1.default({ code: 400, message: "title or author field required" });
+                throw new badRequestError_1.default({
+                    code: 400,
+                    message: "title or author field required"
+                });
             }
             if (!error.isEmpty()) {
-                throw new badRequestError_1.default({ code: 400, message: JSON.stringify(error.array().map(error => error.msg)) });
+                throw new badRequestError_1.default({
+                    code: 400,
+                    message: JSON.stringify(error.array().map(error => error.msg))
+                });
             }
             else {
                 const alreadyExists = yield prisma.books.findFirst({
                     where: { title: title }
                 });
                 if (alreadyExists) {
-                    throw new badRequestError_1.default({ code: 400, message: "title already exists" });
+                    throw new badRequestError_1.default({
+                        code: 400,
+                        message: "title already exists"
+                    });
                 }
                 else {
                     const bookUpdate = yield prisma.books.update({

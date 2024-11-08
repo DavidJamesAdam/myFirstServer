@@ -9,6 +9,7 @@ import { putBookSchema } from "../utils/schemas/putBookSchema";
 
 const router = Router();
 
+// /books/:bookId?
 router.route("/books")
         .get(getBooksHandler)
         .post(bookSchema, postBookHandler);

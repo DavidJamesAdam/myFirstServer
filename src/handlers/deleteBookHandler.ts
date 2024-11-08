@@ -1,5 +1,4 @@
-// TODO: need to handle imporper path variable
-// - Can a message be sent to confirm book has been deleted?
+// All positive test cases and error handling done
 
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
@@ -11,12 +10,15 @@ export async function deleteBookHandler (req: Request, res: Response, next: Next
     const id = req.params.id;
 
     try {
-        const book = await prisma.books.delete({ where: {id: Number(id)}})
-        if (book) {
-            res.status(204).json({ message: `${id} has been deleted`});
-        } else {
-            throw new NotFoundError({ code: 404, message: `book with ID: ${id} not found`});
-        }
+        const book = await prisma.books.delete({ 
+            where: 
+            {id: Number(id)}}).catch(() => {
+                throw new NotFoundError({ 
+                    code: 404, 
+                    message: `book with ID: ${id} not found`
+                })
+            });
+        res.status(204).send();
     } catch(err) {
         next(err);  
     }

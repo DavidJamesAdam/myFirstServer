@@ -1,7 +1,5 @@
-// TODO: need to handle improper path variable
-// - If ID doesn't exist
+// TODO: 
 // - Schema validation
-// - If neither ititle nor field exist in body
 
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
@@ -17,31 +15,42 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
     const error = validationResult(req);
     const updateData: {title?: string; author?: string} = {};
 
-    try { 
-        if (title) updateData.title = title;
-        if (author) updateData.author = author;
+    if (title) updateData.title = title;
+    if (author) updateData.author = author;
 
-        const uniqueId = await prisma.books.findUnique({
+    try { 
+        const uniqueId = await prisma.books.findUniqueOrThrow({
             where: { 
                 id: Number(id) 
             }
+        }).catch(() => {
+            throw new NotFoundError({ 
+                code: 404, 
+                message: `book with ID: ${id} not found` 
+            })
         });
 
-        if(!uniqueId){
-            throw new NotFoundError({ code: 404, message: JSON.stringify(error.array().map(error => error.msg)) });
+        if (!req.body || Object.keys(req.body).length === 0) {
+            throw new BadRequestError({ 
+                code: 400, 
+                message: "title or author field required" 
+            });
         }
 
-        if (!req.body || Object.keys(req.body).length === 0) {
-            throw new BadRequestError({ code: 400, message: "title or author field required" });
-        }
         if (!error.isEmpty()) {
-            throw new BadRequestError({ code: 400, message: JSON.stringify(error.array().map(error => error.msg)) });
+            throw new BadRequestError({ 
+                code: 400, 
+                message: JSON.stringify(error.array().map(error => error.msg)) 
+            });
         } else {
             const alreadyExists = await prisma.books.findFirst({
                 where: {title: title}
             });
             if(alreadyExists) {
-                throw new BadRequestError({ code: 400, message: "title already exists" });
+                throw new BadRequestError({ 
+                    code: 400, 
+                    message: "title already exists" 
+                });
             } else {
                 const bookUpdate = await prisma.books.update({ 
                     where: { 
