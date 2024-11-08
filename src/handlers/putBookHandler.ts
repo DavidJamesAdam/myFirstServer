@@ -1,3 +1,8 @@
+// TODO: need to handle improper path variable
+// - If ID doesn't exist
+// - Schema validation
+// - If neither ititle nor field exist in body
+
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { validationResult } from "express-validator";

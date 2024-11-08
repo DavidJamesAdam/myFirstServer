@@ -1,4 +1,8 @@
 "use strict";
+// TODO: need to handle improper path variable
+// - If ID doesn't exist
+// - Schema validation
+// - If neither ititle nor field exist in body
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {

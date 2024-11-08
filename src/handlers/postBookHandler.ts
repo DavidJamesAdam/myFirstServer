@@ -1,3 +1,5 @@
+// TODO: Need to adjust how schema validation is handled in error (empty string, if field is an integer, etc)
+
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { validationResult } from "express-validator";

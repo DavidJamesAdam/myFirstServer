@@ -1,3 +1,5 @@
+// All positive test cases and error handling done
+
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import NotFoundError from "../errors/notFoundError";

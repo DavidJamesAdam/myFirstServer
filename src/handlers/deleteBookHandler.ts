@@ -1,3 +1,6 @@
+// TODO: need to handle imporper path variable
+// - Can a message be sent to confirm book has been deleted?
+
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import NotFoundError from "../errors/notFoundError";
