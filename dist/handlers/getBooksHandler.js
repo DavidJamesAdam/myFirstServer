@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBooksHandler = getBooksHandler;
 const client_1 = require("@prisma/client");
-const notFOundError_1 = __importDefault(require("../errors/notFOundError"));
+const notFoundError_1 = __importDefault(require("../errors/notFoundError"));
 const prisma = new client_1.PrismaClient();
 function getBooksHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -26,7 +26,7 @@ function getBooksHandler(req, res, next) {
                     where: { title: bookTitle },
                 });
                 if (!singleBook) {
-                    throw new notFOundError_1.default({ code: 404, message: "No books found" });
+                    throw new notFoundError_1.default({ code: 404, message: "title not found" });
                 }
                 else {
                     res.json(singleBook);
@@ -37,7 +37,7 @@ function getBooksHandler(req, res, next) {
                     where: { author: bookAuthor },
                 });
                 if (!booksByAuthor.length) {
-                    throw new notFOundError_1.default({ code: 404, message: "Author not found" });
+                    throw new notFoundError_1.default({ code: 404, message: "Author not found" });
                 }
                 else {
                     res.json(booksByAuthor);
@@ -49,7 +49,6 @@ function getBooksHandler(req, res, next) {
             }
         }
         catch (err) {
-            // getBooksError(<Error>err, res, next);
             next(err);
         }
     });

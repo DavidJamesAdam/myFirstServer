@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
 import { validationResult } from "express-validator";
+import BadRequestError from "../errors/badRequestError";
+import NotFoundError from "../errors/notFoundError";
 
 const prisma = new PrismaClient();
 
@@ -15,23 +16,27 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
         if (title) updateData.title = title;
         if (author) updateData.author = author;
 
-        const uniqueId = await prisma.books.findUniqueOrThrow({
+        const uniqueId = await prisma.books.findUnique({
             where: { 
                 id: Number(id) 
             }
         });
 
+        if(!uniqueId){
+            throw new NotFoundError({ code: 404, message: JSON.stringify(error.array().map(error => error.msg)) });
+        }
+
         if (!req.body || Object.keys(req.body).length === 0) {
-            throw new Error("title or author field required");
+            throw new BadRequestError({ code: 400, message: "title or author field required" });
         }
         if (!error.isEmpty()) {
-            throw new Error();
+            throw new BadRequestError({ code: 400, message: JSON.stringify(error.array().map(error => error.msg)) });
         } else {
             const alreadyExists = await prisma.books.findFirst({
                 where: {title: title}
             });
             if(alreadyExists) {
-                throw new Error("title already exists")
+                throw new BadRequestError({ code: 400, message: "title already exists" });
             } else {
                 const bookUpdate = await prisma.books.update({ 
                     where: { 
@@ -43,21 +48,6 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
             }
         } 
     } catch(err) {
-        if (err instanceof PrismaClientKnownRequestError) {
-            if (err.code === "P2025") {
-                // ID not found error
-                res.status(404).json({ error: err.message });
-            }
-        } else if (err instanceof PrismaClientValidationError) {
-            // Checking for path errors or if the id is missing in path
-            res.status(400).json({ error: "Argument `id` is missing."});
-        } else if (!error.isEmpty()) {
-            // Checking for schema validation errors
-            res.status(400).json({ error: error.array().map(error => error.msg) });
-        } else if (err instanceof Error) {
-            res.status(400).json({ error: err.message });
-        } else {
-            next();
-        }
+        next(err);
     }
 }

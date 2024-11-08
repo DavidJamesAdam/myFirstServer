@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBookByIdHandler = getBookByIdHandler;
 const client_1 = require("@prisma/client");
-const badRequestError_1 = __importDefault(require("../errors/badRequestError"));
+const notFoundError_1 = __importDefault(require("../errors/notFoundError"));
 const prisma = new client_1.PrismaClient();
 function getBookByIdHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -27,7 +27,7 @@ function getBookByIdHandler(req, res, next) {
                 res.json(book);
             }
             else {
-                throw new badRequestError_1.default({ code: 400, message: `book with ID: ${id} not found` });
+                throw new notFoundError_1.default({ code: 404, message: `book with ID: ${id} not found` });
             }
         }
         catch (err) {

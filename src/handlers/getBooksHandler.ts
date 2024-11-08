@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
-import { getBooksError } from "../errors/getBooksError";
-import NotFoundError from "../errors/notFOundError";
+import NotFoundError from "../errors/notFoundError";
 
 const prisma = new PrismaClient();
 
@@ -16,7 +14,7 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
                 where: { title: bookTitle },
             });
             if (!singleBook) {
-                    throw new NotFoundError({ code: 404, message: "No books found" });
+                    throw new NotFoundError({ code: 404, message: "title not found" });
                 } else {
                     res.json(singleBook);
                 }
@@ -35,7 +33,6 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
             res.json(allBooks);
         }
     } catch(err) {
-        // getBooksError(<Error>err, res, next);
         next(err);
     }
 };

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { validationResult } from "express-validator";
+import BadRequestError from "../errors/badRequestError";
 // import { postBooksError } from "../errors/postBooksError";
 
 const prisma = new PrismaClient();
@@ -11,13 +12,13 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
     
     try {
         if (!error.isEmpty()) {
-            throw new Error();
+            throw new BadRequestError({ code: 400, message: JSON.stringify(error.array().map(error => error.msg))});
         } else { 
             const alreadyExists = await prisma.books.findFirst({
                 where: {title: title}
             });
             if(alreadyExists) {
-                throw new Error()
+                throw new BadRequestError({ code: 400, message: "title already exists"});
             } else {
             const book = await prisma.books.create(
                 {
@@ -31,11 +32,6 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
             }
         }
     } catch(err){
-        if(!error.isEmpty()){
-            res.status(400).json({ error: error.array().map(error => error.msg) });
-        } else {
-            res.status(400).json({ error: "title already exists" });
-        }
-        // postBooksError(error, res);
+        next(err);
     }
 }

@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postBookHandler = postBookHandler;
 const client_1 = require("@prisma/client");
 const express_validator_1 = require("express-validator");
+const badRequestError_1 = __importDefault(require("../errors/badRequestError"));
 // import { postBooksError } from "../errors/postBooksError";
 const prisma = new client_1.PrismaClient();
 function postBookHandler(req, res, next) {
@@ -20,14 +24,14 @@ function postBookHandler(req, res, next) {
         const { title, author } = req.body;
         try {
             if (!error.isEmpty()) {
-                throw new Error();
+                throw new badRequestError_1.default({ code: 400, message: JSON.stringify(error.array().map(error => error.msg)) });
             }
             else {
                 const alreadyExists = yield prisma.books.findFirst({
                     where: { title: title }
                 });
                 if (alreadyExists) {
-                    throw new Error();
+                    throw new badRequestError_1.default({ code: 400, message: "title already exists" });
                 }
                 else {
                     const book = yield prisma.books.create({
@@ -41,13 +45,7 @@ function postBookHandler(req, res, next) {
             }
         }
         catch (err) {
-            if (!error.isEmpty()) {
-                res.status(400).json({ error: error.array().map(error => error.msg) });
-            }
-            else {
-                res.status(400).json({ error: "title already exists" });
-            }
-            // postBooksError(error, res);
+            next(err);
         }
     });
 }

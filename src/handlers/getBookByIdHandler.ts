@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientValidationError } from "@prisma/client/runtime/library";
-import BadRequestError from "../errors/badRequestError";
+import NotFoundError from "../errors/notFoundError";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +14,7 @@ export async function getBookByIdHandler (req: Request, res: Response, next: Nex
         if (book) {
           res.json(book);
         } else {
-            throw new BadRequestError({code: 400, message: `book with ID: ${id} not found`});
+            throw new NotFoundError({code: 404, message: `book with ID: ${id} not found`});
         }
     } catch(err) {
         next(err);

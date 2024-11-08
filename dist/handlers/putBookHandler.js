@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.putBookHandler = putBookHandler;
 const client_1 = require("@prisma/client");
-const library_1 = require("@prisma/client/runtime/library");
 const express_validator_1 = require("express-validator");
+const badRequestError_1 = __importDefault(require("../errors/badRequestError"));
+const notFoundError_1 = __importDefault(require("../errors/notFoundError"));
 const prisma = new client_1.PrismaClient();
 function putBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -25,23 +29,26 @@ function putBookHandler(req, res, next) {
                 updateData.title = title;
             if (author)
                 updateData.author = author;
-            const uniqueId = yield prisma.books.findUniqueOrThrow({
+            const uniqueId = yield prisma.books.findUnique({
                 where: {
                     id: Number(id)
                 }
             });
+            if (!uniqueId) {
+                throw new notFoundError_1.default({ code: 404, message: JSON.stringify(error.array().map(error => error.msg)) });
+            }
             if (!req.body || Object.keys(req.body).length === 0) {
-                throw new Error("title or author field required");
+                throw new badRequestError_1.default({ code: 400, message: "title or author field required" });
             }
             if (!error.isEmpty()) {
-                throw new Error();
+                throw new badRequestError_1.default({ code: 400, message: JSON.stringify(error.array().map(error => error.msg)) });
             }
             else {
                 const alreadyExists = yield prisma.books.findFirst({
                     where: { title: title }
                 });
                 if (alreadyExists) {
-                    throw new Error("title already exists");
+                    throw new badRequestError_1.default({ code: 400, message: "title already exists" });
                 }
                 else {
                     const bookUpdate = yield prisma.books.update({
@@ -55,26 +62,7 @@ function putBookHandler(req, res, next) {
             }
         }
         catch (err) {
-            if (err instanceof library_1.PrismaClientKnownRequestError) {
-                if (err.code === "P2025") {
-                    // ID not found error
-                    res.status(404).json({ error: err.message });
-                }
-            }
-            else if (err instanceof library_1.PrismaClientValidationError) {
-                // Checking for path errors or if the id is missing in path
-                res.status(400).json({ error: "Argument `id` is missing." });
-            }
-            else if (!error.isEmpty()) {
-                // Checking for schema validation errors
-                res.status(400).json({ error: error.array().map(error => error.msg) });
-            }
-            else if (err instanceof Error) {
-                res.status(400).json({ error: err.message });
-            }
-            else {
-                next();
-            }
+            next(err);
         }
     });
 }

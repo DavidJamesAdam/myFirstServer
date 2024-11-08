@@ -8,14 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBookHandler = deleteBookHandler;
 const client_1 = require("@prisma/client");
-const library_1 = require("@prisma/client/runtime/library");
+const notFoundError_1 = __importDefault(require("../errors/notFoundError"));
 const prisma = new client_1.PrismaClient();
 function deleteBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
         const id = req.params.id;
         try {
             const book = yield prisma.books.delete({ where: { id: Number(id) } });
@@ -23,22 +25,11 @@ function deleteBookHandler(req, res, next) {
                 res.status(204).json({ message: `${id} has been deleted` });
             }
             else {
-                throw new Error();
+                throw new notFoundError_1.default({ code: 404, message: `book with ID: ${id} not found` });
             }
         }
         catch (err) {
-            // next(new deleteBooksError);
-            if (err instanceof library_1.PrismaClientKnownRequestError) {
-                // Checking if ID not found
-                if (err.code === "P2025") {
-                    const cause = (_a = err.meta) === null || _a === void 0 ? void 0 : _a.cause;
-                    res.status(404).json({ error: cause });
-                }
-            }
-            else if (err instanceof library_1.PrismaClientValidationError) {
-                // Checking for path errors or if the id is missing in path
-                res.status(400).json({ error: "Argument `id` is missing." });
-            }
+            next(err);
         }
     });
 }
