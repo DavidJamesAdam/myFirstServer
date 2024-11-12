@@ -1,5 +1,5 @@
 export type CustomErrorContnent = {
-    message: string,
+    message: string, // Would like this to be an object
     context?: { [key: string]: any }
 };
 
