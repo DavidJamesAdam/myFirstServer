@@ -25,7 +25,7 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
         }).catch(() => {
             throw new NotFoundError({ 
                 code: 404, 
-                message: { error: `book with ID: ${id} not found`} 
+                message: { default: `book with ID: ${id} not found`} 
             })
         });
 

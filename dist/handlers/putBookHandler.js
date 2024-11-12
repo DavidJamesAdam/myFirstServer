@@ -37,7 +37,7 @@ function putBookHandler(req, res, next) {
             }).catch(() => {
                 throw new notFoundError_1.default({
                     code: 404,
-                    message: { error: `book with ID: ${id} not found` }
+                    message: { default: `book with ID: ${id} not found` }
                 });
             });
             if (!req.body || Object.keys(req.body).length === 0) {

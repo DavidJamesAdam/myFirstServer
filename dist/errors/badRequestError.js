@@ -4,7 +4,7 @@ const customError_1 = require("./customError");
 class BadRequestError extends customError_1.CustomError {
     constructor(params) {
         const { code, message } = params || {};
-        super(message || { message: "Bad Request" });
+        super(message || { default: "Bad Request" });
         this._code = code || BadRequestError._statusCode;
         this._context = (params === null || params === void 0 ? void 0 : params.context) || {};
         Object.setPrototypeOf(this, BadRequestError.prototype);
