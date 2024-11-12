@@ -18,6 +18,15 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
     if (author) updateData.author = author;
 
     try { 
+        if(!result.isEmpty()) {
+            const error = result.array({ onlyFirstError: true }).find(error => error.path === 'id');
+            console.log(error);
+            throw new BadRequestError({ 
+                code: 400, 
+                message: error.msg
+            });
+        }
+
         const uniqueId = await prisma.books.findUniqueOrThrow({
             where: { 
                 id: Number(id) 

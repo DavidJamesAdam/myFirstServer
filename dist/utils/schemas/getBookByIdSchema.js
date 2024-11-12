@@ -5,8 +5,8 @@ const express_validator_1 = require("express-validator");
 exports.bookByIdSchema = (0, express_validator_1.checkSchema)({
     id: {
         in: ['params'],
-        exists: {
-            errorMessage: "Parameter 'id' is missing"
+        isInt: {
+            errorMessage: "Parameter 'id' must be integer"
         }
     }
 });

@@ -30,6 +30,14 @@ function putBookHandler(req, res, next) {
         if (author)
             updateData.author = author;
         try {
+            if (!result.isEmpty()) {
+                const error = result.array({ onlyFirstError: true }).find(error => error.path === 'id');
+                console.log(error);
+                throw new badRequestError_1.default({
+                    code: 400,
+                    message: error.msg
+                });
+            }
             const uniqueId = yield prisma.books.findUniqueOrThrow({
                 where: {
                     id: Number(id)

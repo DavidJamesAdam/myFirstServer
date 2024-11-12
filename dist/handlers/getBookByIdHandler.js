@@ -18,11 +18,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBookByIdHandler = getBookByIdHandler;
 const client_1 = require("@prisma/client");
 const notFoundError_1 = __importDefault(require("../errors/notFoundError"));
+const express_validator_1 = require("express-validator");
 const prisma = new client_1.PrismaClient();
 function getBookByIdHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params.id;
+        const result = (0, express_validator_1.validationResult)(req);
         try {
+            if (!result.isEmpty()) {
+                console.log(result);
+                const error = result.array().map(error => error.msg).join(", ");
+                throw new notFoundError_1.default({
+                    code: 404,
+                    message: error
+                });
+            }
             const book = yield prisma.books.findUniqueOrThrow({
                 where: {
                     id: Number(id)
