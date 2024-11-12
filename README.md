@@ -27,4 +27,5 @@ Callbacks, Promises, Async/Await
 
 
 TODO:
-- Figure out how to implement error handling (required field not present, body of request note present, etc)
+- Learn more about schema and schema validation
+- Learn more about models in Prisma
