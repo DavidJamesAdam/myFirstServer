@@ -1,5 +1,5 @@
 "use strict";
-// TODO: Need to adjust how schema validation is handled in error (empty string, if field is an integer, etc)
+// All positive test cases and error handling done
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -21,9 +21,10 @@ const prisma = new client_1.PrismaClient();
 function postBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const error = (0, express_validator_1.validationResult)(req).mapped();
+            const result = (0, express_validator_1.validationResult)(req);
             const { title, author } = req.body;
-            if (!error.isEmpty()) {
+            if (!result.isEmpty()) {
+                const error = result.array().map(error => error.msg).join(", ");
                 throw new badRequestError_1.default({ code: 400, message: error });
             }
             else {

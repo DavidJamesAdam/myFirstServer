@@ -1,6 +1,5 @@
 "use strict";
-// TODO: 
-// - Schema validation
+// All positive test cases and error handling done
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -24,7 +23,7 @@ function putBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params.id;
         const { title, author } = req.body;
-        const error = (0, express_validator_1.validationResult)(req);
+        const result = (0, express_validator_1.validationResult)(req);
         const updateData = {};
         if (title)
             updateData.title = title;
@@ -47,10 +46,11 @@ function putBookHandler(req, res, next) {
                     message: "title or author field required"
                 });
             }
-            if (!error.isEmpty()) {
+            if (!result.isEmpty()) {
+                const error = result.array().map(error => error.msg).join(", ");
                 throw new badRequestError_1.default({
                     code: 400,
-                    message: JSON.stringify(error.array().map(error => error.msg))
+                    message: error
                 });
             }
             else {

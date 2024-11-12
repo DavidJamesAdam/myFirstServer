@@ -1,18 +1,19 @@
-// TODO: Need to adjust how schema validation is handled in error (empty string, if field is an integer, etc)
+// All positive test cases and error handling done
 
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
-import { validationResult } from "express-validator";
+import { Result, validationResult } from "express-validator";
 import BadRequestError from "../errors/badRequestError";
 
 const prisma = new PrismaClient();
 
 export async function postBookHandler (req: Request, res: Response, next: NextFunction) {
     try {
-        const error = validationResult(req).mapped();
+        const result: Result = validationResult(req);
         const { title, author } = req.body;
 
-        if (!error.isEmpty()) {
+        if (!result.isEmpty()) {
+            const error = result.array().map(error => error.msg).join(", ");
             throw new BadRequestError({ code: 400, message: error});
         } else { 
             const alreadyExists = await prisma.books.findFirst({

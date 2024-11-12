@@ -1,9 +1,8 @@
-// TODO: 
-// - Schema validation
+// All positive test cases and error handling done
 
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
-import { validationResult } from "express-validator";
+import { Result, validationResult } from "express-validator";
 import BadRequestError from "../errors/badRequestError";
 import NotFoundError from "../errors/notFoundError";
 
@@ -12,7 +11,7 @@ const prisma = new PrismaClient();
 export async function putBookHandler (req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     const { title, author } = req.body;
-    const error = validationResult(req);
+    const result: Result = validationResult(req);
     const updateData: {title?: string; author?: string} = {};
 
     if (title) updateData.title = title;
@@ -37,10 +36,11 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
             });
         }
 
-        if (!error.isEmpty()) {
+        if (!result.isEmpty()) {
+            const error = result.array().map(error => error.msg).join(", ")
             throw new BadRequestError({ 
                 code: 400, 
-                message: JSON.stringify(error.array().map(error => error.msg)) 
+                message: error
             });
         } else {
             const alreadyExists = await prisma.books.findFirst({
