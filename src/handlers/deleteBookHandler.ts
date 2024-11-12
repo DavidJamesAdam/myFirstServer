@@ -15,7 +15,7 @@ export async function deleteBookHandler (req: Request, res: Response, next: Next
             {id: Number(id)}}).catch(() => {
                 throw new NotFoundError({ 
                     code: 404, 
-                    message: `book with ID: ${id} not found`
+                    message: { error: `book with ID: ${id} not found`}
                 })
             });
         res.status(204).send();

@@ -19,7 +19,7 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
             }).catch(() => {
                     throw new NotFoundError({ 
                         code: 404, 
-                        message: "title not found"
+                        message: { error: "title not found" }
                     })
                 })
                 res.json(singleBook);
@@ -31,7 +31,7 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
             if (!booksByAuthor.length) {
                 throw new NotFoundError({ 
                     code: 404, 
-                    message: "Author not found" 
+                    message: { error: "Author not found" } 
                 });
             } else {
                 res.json(booksByAuthor);

@@ -14,13 +14,16 @@ export async function postBookHandler (req: Request, res: Response, next: NextFu
 
         if (!result.isEmpty()) {
             const error = result.array().map(error => error.msg).join(", ");
-            throw new BadRequestError({ code: 400, message: error});
+            throw new BadRequestError({ code: 400, message: {error}});
         } else { 
             const alreadyExists = await prisma.books.findFirst({
                 where: {title: title}
             });
             if(alreadyExists) {
-                throw new BadRequestError({ code: 400, message: "title already exists"});
+                throw new BadRequestError({ 
+                    code: 400, 
+                    message: { error: "title already exists"}
+                });
             } else {
             const book = await prisma.books.create(
                 {

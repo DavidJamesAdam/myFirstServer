@@ -18,7 +18,7 @@ export async function getBookByIdHandler (req: Request, res: Response, next: Nex
             {
                 throw new NotFoundError({ 
                     code: 404, 
-                    message: `book with ID: ${id} not found`
+                    message: { error: `book with ID: ${id} not found`}
                 })
             });
         res.json(book);

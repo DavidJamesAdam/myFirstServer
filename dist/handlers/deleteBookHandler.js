@@ -26,7 +26,7 @@ function deleteBookHandler(req, res, next) {
             }).catch(() => {
                 throw new notFoundError_1.default({
                     code: 404,
-                    message: `book with ID: ${id} not found`
+                    message: { error: `book with ID: ${id} not found` }
                 });
             });
             res.status(204).send();

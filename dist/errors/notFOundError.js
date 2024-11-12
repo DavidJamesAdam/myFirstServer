@@ -4,13 +4,13 @@ const customError_1 = require("./customError");
 class NotFoundError extends customError_1.CustomError {
     constructor(params) {
         const { code, message } = params || {};
-        super(message || "Not Found");
+        super(message || { message: "Not Found" });
         this._code = code || NotFoundError._statusCode;
         this._context = (params === null || params === void 0 ? void 0 : params.context) || {};
         Object.setPrototypeOf(this, NotFoundError.prototype);
     }
     get errors() {
-        return [{ message: this.message, context: this._context }];
+        return [{ message: JSON.parse(this.message), context: this._context }];
     }
     get statusCode() {
         return this._code;

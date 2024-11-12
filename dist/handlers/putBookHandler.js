@@ -37,20 +37,20 @@ function putBookHandler(req, res, next) {
             }).catch(() => {
                 throw new notFoundError_1.default({
                     code: 404,
-                    message: `book with ID: ${id} not found`
+                    message: { error: `book with ID: ${id} not found` }
                 });
             });
             if (!req.body || Object.keys(req.body).length === 0) {
                 throw new badRequestError_1.default({
                     code: 400,
-                    message: "title or author field required"
+                    message: { error: "title or author field required" }
                 });
             }
             if (!result.isEmpty()) {
                 const error = result.array().map(error => error.msg).join(", ");
                 throw new badRequestError_1.default({
                     code: 400,
-                    message: error
+                    message: { error }
                 });
             }
             else {
@@ -60,7 +60,7 @@ function putBookHandler(req, res, next) {
                 if (alreadyExists) {
                     throw new badRequestError_1.default({
                         code: 400,
-                        message: "title already exists"
+                        message: { error: "title already exists" }
                     });
                 }
                 else {

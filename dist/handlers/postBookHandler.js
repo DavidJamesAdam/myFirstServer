@@ -25,14 +25,17 @@ function postBookHandler(req, res, next) {
             const { title, author } = req.body;
             if (!result.isEmpty()) {
                 const error = result.array().map(error => error.msg).join(", ");
-                throw new badRequestError_1.default({ code: 400, message: error });
+                throw new badRequestError_1.default({ code: 400, message: { error } });
             }
             else {
                 const alreadyExists = yield prisma.books.findFirst({
                     where: { title: title }
                 });
                 if (alreadyExists) {
-                    throw new badRequestError_1.default({ code: 400, message: "title already exists" });
+                    throw new badRequestError_1.default({
+                        code: 400,
+                        message: { error: "title already exists" }
+                    });
                 }
                 else {
                     const book = yield prisma.books.create({

@@ -5,10 +5,10 @@ export default class NotFoundError extends CustomError {
     private readonly _code: number;
     private readonly _context: { [key: string]: any };
 
-    constructor(params?: {code?: number, message?: string, context?: { [key: string]: any }}) {
+    constructor(params?: {code?: number, message?: { [key: string]: string } , context?: { [key: string]: any }}) {
         const { code, message } = params || {};
         
-        super(message || "Not Found");
+        super(message || { message: "Not Found" });
         this._code = code || NotFoundError._statusCode;
         this._context = params?.context || {};
 
@@ -16,7 +16,7 @@ export default class NotFoundError extends CustomError {
     }
 
     get errors() {
-        return [{ message: this.message, context: this._context }];
+        return [{ message: JSON.parse(this.message), context: this._context }];
     }
 
     get statusCode() {

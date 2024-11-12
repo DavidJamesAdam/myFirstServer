@@ -25,14 +25,14 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
         }).catch(() => {
             throw new NotFoundError({ 
                 code: 404, 
-                message: `book with ID: ${id} not found` 
+                message: { error: `book with ID: ${id} not found`} 
             })
         });
 
         if (!req.body || Object.keys(req.body).length === 0) {
             throw new BadRequestError({ 
                 code: 400, 
-                message: "title or author field required" 
+                message: { error: "title or author field required" }
             });
         }
 
@@ -40,7 +40,7 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
             const error = result.array().map(error => error.msg).join(", ")
             throw new BadRequestError({ 
                 code: 400, 
-                message: error
+                message: {error}
             });
         } else {
             const alreadyExists = await prisma.books.findFirst({
@@ -49,7 +49,7 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
             if(alreadyExists) {
                 throw new BadRequestError({ 
                     code: 400, 
-                    message: "title already exists" 
+                    message: {error: "title already exists"} 
                 });
             } else {
                 const bookUpdate = await prisma.books.update({ 
