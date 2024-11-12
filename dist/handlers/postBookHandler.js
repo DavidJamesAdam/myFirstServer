@@ -21,10 +21,10 @@ const prisma = new client_1.PrismaClient();
 function postBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const error = (0, express_validator_1.validationResult)(req);
+            const error = (0, express_validator_1.validationResult)(req).mapped();
             const { title, author } = req.body;
             if (!error.isEmpty()) {
-                throw new badRequestError_1.default({ code: 400, message: JSON.stringify(error.array().map(error => error.msg)) });
+                throw new badRequestError_1.default({ code: 400, message: error });
             }
             else {
                 const alreadyExists = yield prisma.books.findFirst({
