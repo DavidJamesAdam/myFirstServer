@@ -55,7 +55,9 @@ function putBookHandler(req, res, next) {
             }
             else {
                 const alreadyExists = yield prisma.books.findFirst({
-                    where: { title: title }
+                    where: {
+                        title: title
+                    }
                 });
                 if (alreadyExists) {
                     throw new badRequestError_1.default({
@@ -70,7 +72,10 @@ function putBookHandler(req, res, next) {
                         },
                         data: updateData
                     });
-                    res.json({ message: "book successfully updated", bookUpdate });
+                    res.json({
+                        message: "book successfully updated",
+                        bookUpdate
+                    });
                 }
             }
         }

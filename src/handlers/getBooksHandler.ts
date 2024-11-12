@@ -25,7 +25,9 @@ export async function getBooksHandler (req: Request, res: Response, next: NextFu
                 res.json(singleBook);
             } else if (typeof bookAuthor === 'string') {
             const booksByAuthor = await prisma.books.findMany({
-                where: { author: bookAuthor },
+                where: { 
+                    author: bookAuthor 
+                },
             });
 
             if (!booksByAuthor.length) {

@@ -37,7 +37,9 @@ function getBooksHandler(req, res, next) {
             }
             else if (typeof bookAuthor === 'string') {
                 const booksByAuthor = yield prisma.books.findMany({
-                    where: { author: bookAuthor },
+                    where: {
+                        author: bookAuthor
+                    },
                 });
                 if (!booksByAuthor.length) {
                     throw new notFoundError_1.default({

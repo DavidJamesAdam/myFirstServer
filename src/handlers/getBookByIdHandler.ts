@@ -13,7 +13,9 @@ export async function getBookByIdHandler (req: Request, res: Response, next: Nex
 
     try {
         const book = await prisma.books.findUniqueOrThrow({
-            where: { id: Number(id) },
+            where: { 
+                id: Number(id) 
+            },
         }).catch(() => 
             {
                 throw new NotFoundError({ 

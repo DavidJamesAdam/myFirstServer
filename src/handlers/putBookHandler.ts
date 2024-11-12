@@ -44,7 +44,9 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
             });
         } else {
             const alreadyExists = await prisma.books.findFirst({
-                where: {title: title}
+                where: {
+                    title: title
+                }
             });
             if(alreadyExists) {
                 throw new BadRequestError({ 
@@ -58,7 +60,10 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
                         },
                         data: updateData 
                     });
-                res.json({ message: "book successfully updated", bookUpdate });
+                res.json({ 
+                    message: "book successfully updated", 
+                    bookUpdate 
+                });
             }
         } 
     } catch(err) {

@@ -24,7 +24,9 @@ function getBookByIdHandler(req, res, next) {
         const id = req.params.id;
         try {
             const book = yield prisma.books.findUniqueOrThrow({
-                where: { id: Number(id) },
+                where: {
+                    id: Number(id)
+                },
             }).catch(() => {
                 throw new notFoundError_1.default({
                     code: 404,
