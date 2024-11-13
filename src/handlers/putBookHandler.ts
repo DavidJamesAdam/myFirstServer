@@ -13,12 +13,13 @@ export async function putBookHandler (req: Request, res: Response, next: NextFun
     const { title, author } = req.body;
     const result: Result = validationResult(req);
     const updateData: {title?: string; author?: string} = {};
+    const error = result.array({ onlyFirstError: true }).find(error => error.path === 'id');
 
     if (title) updateData.title = title;
     if (author) updateData.author = author;
 
     try { 
-        if(!result.isEmpty()) {
+        if(error) {
             const error = result.array({ onlyFirstError: true }).find(error => error.path === 'id');
             console.log(error);
             throw new BadRequestError({ 

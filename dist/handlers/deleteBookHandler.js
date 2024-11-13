@@ -16,11 +16,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBookHandler = deleteBookHandler;
 const client_1 = require("@prisma/client");
 const notFoundError_1 = __importDefault(require("../errors/notFoundError"));
+const express_validator_1 = require("express-validator");
+const badRequestError_1 = __importDefault(require("../errors/badRequestError"));
 const prisma = new client_1.PrismaClient();
 function deleteBookHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params.id;
+        const result = (0, express_validator_1.validationResult)(req);
+        const error = result.array({ onlyFirstError: true }).find(error => error.path === 'id');
         try {
+            if (error) {
+                const error = result.array({ onlyFirstError: true }).find(error => error.path === 'id');
+                console.log(error);
+                throw new badRequestError_1.default({
+                    code: 400,
+                    message: error.msg
+                });
+            }
             const book = yield prisma.books.delete({
                 where: { id: Number(id) }
             }).catch(() => {

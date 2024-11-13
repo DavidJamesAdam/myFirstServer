@@ -25,12 +25,13 @@ function putBookHandler(req, res, next) {
         const { title, author } = req.body;
         const result = (0, express_validator_1.validationResult)(req);
         const updateData = {};
+        const error = result.array({ onlyFirstError: true }).find(error => error.path === 'id');
         if (title)
             updateData.title = title;
         if (author)
             updateData.author = author;
         try {
-            if (!result.isEmpty()) {
+            if (error) {
                 const error = result.array({ onlyFirstError: true }).find(error => error.path === 'id');
                 console.log(error);
                 throw new badRequestError_1.default({

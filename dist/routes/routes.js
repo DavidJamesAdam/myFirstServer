@@ -9,6 +9,7 @@ const putBookHandler_1 = require("../handlers/putBookHandler");
 const postBookSchema_1 = require("../utils/schemas/postBookSchema");
 const putBookSchema_1 = require("../utils/schemas/putBookSchema");
 const getBookByIdSchema_1 = require("../utils/schemas/getBookByIdSchema");
+const deleteBookSchema_1 = require("../utils/schemas/deleteBookSchema");
 const router = (0, express_1.Router)();
 // /books/:bookId?
 router.route("/books")
@@ -17,5 +18,5 @@ router.route("/books")
 router.route("/books/:id")
     .get(getBookByIdSchema_1.bookByIdSchema, getBookByIdHandler_1.getBookByIdHandler)
     .put(putBookSchema_1.putBookSchema, putBookHandler_1.putBookHandler)
-    .delete(deleteBookHandler_1.deleteBookHandler);
+    .delete(deleteBookSchema_1.deleteBookSchema, deleteBookHandler_1.deleteBookHandler);
 exports.default = router;
