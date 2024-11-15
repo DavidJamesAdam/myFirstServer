@@ -9,23 +9,15 @@ https://medium.com/@holasoymalva/how-to-build-a-rest-api-with-node-js-and-typesc
 
 
 Error handling for APIs: 
-https://www.youtube.com/watch?v=xnedbgDoRkA (video 91, 92, and 93)
-https://expressjs.com/en/guide/error-handling.html
-https://www.youtube.com/watch?v=7WGVCx7Detc
 https://medium.com/@xiaominghu19922/proper-error-handling-in-express-server-with-typescript-8cd4ffb67188
-
-What is Express?
-- Exporess JS is a web application framework. It's a layer built on top of Node that helps manage servers and routes.
+- Has custome error class
+- Found this resource most helpful
 
 How To Use TypeScript With Express & Node (also goes into scripting in package.json)
 - https://www.youtube.com/watch?v=qy8PxD3alWw
 
-Callbacks, Promises, Async/Await
-- https://www.youtube.com/watch?v=670f71LTWpM
-- https://www.youtube.com/watch?v=vn3tm0quoqE
-- https://www.youtube.com/watch?v=9j1dZwFEJ-c
-
-
 TODO:
+- Try to create own type for get, post, put, delete
 - Learn more about schema and schema validation
 - Learn more about models in Prisma
+- Learn more about Foreign Keys
