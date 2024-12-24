@@ -21,3 +21,9 @@ TODO:
 - Learn more about schema and schema validation
 - Learn more about models in Prisma
 - Learn more about Foreign Keys
+
+How to set up
+- npm i
+- npm i -g prisma
+- npm i @prisma/client
+- prisma migrate dev --name init
